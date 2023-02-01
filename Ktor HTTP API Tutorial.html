@@ -1,0 +1,354 @@
+
+<!DOCTYPE html SYSTEM "about:legacy-compat"><html lang="en-US" data-colors-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8">  <meta name="built-on" content="2023-01-20T13:23:53.802453"><meta name="build-number" content="1729">    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5P98');</script>
+    <!-- End Google Tag Manager -->   <meta name="keywords" content="">  <title>Creating HTTP APIs | Ktor</title><script id="virtual-toc-data" type="application/json">[{"id":"prerequisites","level":0,"title":"Prerequisites","anchor":"#prerequisites"},{"id":"create_ktor_project","level":0,"title":"Create a new Ktor project","anchor":"#create_ktor_project"},{"id":"project_setup","level":0,"title":"Examine the project","anchor":"#project_setup"},{"id":"dependencies","level":1,"title":"Dependencies","anchor":"#dependencies"},{"id":"configurations","level":1,"title":"Configurations: application.conf and logback.xml","anchor":"#configurations"},{"id":"source_code","level":1,"title":"Source code","anchor":"#source_code"},{"id":"customer_routes","level":0,"title":"Customer routes","anchor":"#customer_routes"},{"id":"customer_model","level":1,"title":"Create the Customer model","anchor":"#customer_model"},{"id":"customer_storage","level":1,"title":"Create the Customer storage","anchor":"#customer_storage"},{"id":"customer_routing","level":1,"title":"Define the routing for customers","anchor":"#customer_routing"},{"id":"register_customer_routes","level":1,"title":"Register the routes","anchor":"#register_customer_routes"},{"id":"order_routes","level":0,"title":"Order routes","anchor":"#order_routes"},{"id":"order_model","level":1,"title":"Create the Order model","anchor":"#order_model"},{"id":"define_order_routes","level":1,"title":"Define the routing for orders","anchor":"#define_order_routes"},{"id":"register-order-routes","level":1,"title":"Register the routes","anchor":"#register-order-routes"},{"id":"manual_test","level":0,"title":"Test HTTP endpoints manually","anchor":"#manual_test"},{"id":"create_customer_http","level":1,"title":"Create a customer HTTP test file","anchor":"#create_customer_http"},{"id":"run_api_server","level":1,"title":"Run API server","anchor":"#run_api_server"},{"id":"order_endpoints","level":1,"title":"Order endpoints","anchor":"#order_endpoints"},{"id":"automated_testing","level":0,"title":"Automated testing","anchor":"#automated_testing"},{"id":"whats_next","level":0,"title":"What\u0027s next","anchor":"#whats_next"},{"id":"feature_requests","level":1,"title":"Feature requests","anchor":"#feature_requests"}]</script>   <link href="https://resources.jetbrains.com/storage/help-app/v5/app.css" rel="stylesheet">   <link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><link rel="manifest" href="https://jetbrains.com/site.webmanifest"><link rel="mask-icon" href="https://jetbrains.com/safari-pinned-tab.svg" color="#000000"><meta name="msapplication-TileColor" content="#000000"/><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"/><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"/><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"/><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"/><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"/>  <meta name="image" content="https://raw.githubusercontent.com/ktorio/ktor-documentation/main/preview.png"><!-- Open Graph --><meta property="og:title" content="Creating HTTP APIs | Ktor"/><meta property="og:description" content=""/><meta property="og:image" content="https://raw.githubusercontent.com/ktorio/ktor-documentation/main/preview.png"/><meta property="og:site_name" content="Ktor Help"/><meta property="og:type" content="website"/><meta property="og:locale" content="en_US"/><meta property="og:url" content="https://ktor.io/docs/2.2.2/creating-http-apis.html"/><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@JetBrainsKtor"><meta name="twitter:title" content="Creating HTTP APIs | Ktor"><meta name="twitter:description" content=""><meta name="twitter:creator" content="@JetBrainsKtor"><meta name="twitter:image:src" content="https://raw.githubusercontent.com/ktorio/ktor-documentation/main/preview.png"><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json"> { "@context": "http://schema.org", "@type": "WebPage", "@id": "https://ktor.io/docs/2.2.2/creating-http-apis.html#webpage", "url": "https://ktor.io/docs/2.2.2/creating-http-apis.html", "name": "Creating HTTP APIs | Ktor", "description": "", "image": "https://raw.githubusercontent.com/ktorio/ktor-documentation/main/preview.png", "inLanguage":"en-US" }</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json"> { "@type": "WebSite", "@id": "https://ktor.io/docs/#website", "url": "https://ktor.io/docs/", "name": "Ktor Help" }</script><!-- End Schema.org --></head>    <body data-id="creating_http_apis.md" data-main-title="Creating HTTP APIs" data-article-props="{&quot;microFormat&quot;:[&quot;\u003cp id\u003d\&quot;2065fd2d_6\&quot; \u003e\u003cb id\u003d\&quot;2065fd2d_7\&quot; class\u003d\&quot;\&quot;  \u003eCode example\u003c/b\u003e: \u003ca href\u003d\&quot;https://github.com/ktorio/ktor-documentation/tree/2.2.2/codeSnippets/snippets/tutorial-http-api\&quot; id\u003d\&quot;2065fd2d_8\&quot;   data-external\u003d\&quot;true\&quot; rel\u003d\&quot;noopener noreferrer\&quot; \u003etutorial-http-api\u003c/a\u003e\u003c/p\u003e&quot;,&quot;\u003cp id\u003d\&quot;2065fd2d_9\&quot; \u003e\u003cb id\u003d\&quot;2065fd2d_10\&quot; class\u003d\&quot;\&quot;  \u003eUsed plugins\u003c/b\u003e: \u003ca href\u003d\&quot;routing-in-ktor.html\&quot; id\u003d\&quot;2065fd2d_11\&quot; data-tooltip\u003d\&quot;Routing is the core Ktor plugin for handling incoming requests in a server application.\&quot;  \u003eRouting\u003c/a\u003e, \u003ca href\u003d\&quot;serialization.html\&quot; id\u003d\&quot;2065fd2d_12\&quot; data-tooltip\u003d\&quot;\nThe ContentNegotiation plugin serves two primary purposes: negotiating media types between the client and server and serializing/deserializing the content in a specific format.\n\&quot;  \u003eContentNegotiation\u003c/a\u003e, kotlinx.serialization\u003c/p\u003e&quot;],&quot;seeAlsoStyle&quot;:&quot;links&quot;}"  data-template="article"  data-breadcrumbs="Ktor Server///Getting started with a Ktor Server"  data-edit-url="https://github.com/ktorio/ktor-documentation/edit/main/topics/creating_http_apis.md"  >  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->   <div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Ktor 2.2.2 Help</h3><div class="shortcuts-switcher"><label for="switch-shortcuts">Keymap:</label><select class="select _shortcuts" height="1" id="switch-shortcuts">      </select></div><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="creating_http_apis.md" id="creating_http_apis.md"  >Creating HTTP APIs</h1><p id="2065fd2d_14" >In this tutorial, we're going to create an HTTP API that can serve as a backend for any application, be it mobile, web, desktop, or even a B2B service. We will see how routes are defined and structured, how serialization plugins help simplify tedious tasks, and how we can test parts of our application both manually and automated.</p><p id="2065fd2d_15" >Throughout the tutorial, we'll build a simple JSON API that allows us to query information about the customers of our fictitious business, as well as the orders we currently want to fulfill. We will build a convenient way of listing all customers and orders in our system, get information for individual customers and orders, and provide the functionality to add new entries and remove old entries.</p><section class="chapter"  ><h2 id="prerequisites" data-toc="prerequisites"  >Prerequisites</h2><p id="2065fd2d_16" >Before starting this tutorial:</p><ul class="list _ul" id="2065fd2d_17"    ><li class="list__item" id="2065fd2d_18" ><p id="2065fd2d_19" ><a href="https://www.jetbrains.com/help/idea/installation-guide.html" id="2065fd2d_20"   data-external="true" rel="noopener noreferrer" >Install IntelliJ IDEA Ultimate</a>.</p><aside data-type="note" class="prompt" data-title="" id="2065fd2d_21" ><p id="2065fd2d_22" >If you use IntelliJ IDEA Community or other IDE, you can generate a Ktor project using a <a href="https://start.ktor.io/" id="2065fd2d_23"   data-external="true" rel="noopener noreferrer" >web-based project generator</a>.</p></aside></li><li class="list__item" id="2065fd2d_24" ><p id="2065fd2d_25" >Make sure the <a href="https://www.jetbrains.com/help/idea/ktor.html" id="2065fd2d_26"   data-external="true" rel="noopener noreferrer" >Ktor plugin</a> is installed and enabled.</p></li></ul></section><section class="chapter"  ><h2 id="create_ktor_project" data-toc="create_ktor_project"  >Create a new Ktor project</h2><p id="2065fd2d_27" >To create a base project for our application using the Ktor plugin, <a href="https://www.jetbrains.com/help/idea/run-for-the-first-time.html" id="2065fd2d_28"   data-external="true" rel="noopener noreferrer" >open IntelliJ IDEA</a> and follow the steps below:</p><ol class="list _decimal" id="2065fd2d_29"  type="1"  ><li class="list__item" id="2065fd2d_30" ><p id="2065fd2d_31" >On the Welcome screen, click <span class="control" id="2065fd2d_32" >New Project</span>.</p><p id="2065fd2d_33" >Otherwise, from the main menu, select <span class="menupath " id="2065fd2d_34"  >File | New | Project</span>.</p></li><li class="list__item" id="2065fd2d_35" ><p id="2065fd2d_36" >In the <span class="control" id="2065fd2d_37" >New Project</span> wizard, choose <span class="control" id="2065fd2d_38" >Ktor</span> from the list on the left. On the right pane, specify the following settings:</p><figure  id="2065fd2d_39"><img alt="New Ktor project" title="New Ktor project" src="images/tutorial_http_api_new_project.png"  class="article__bordered-element--rounded " width="706" height="548"/></figure><ul class="list _ul" id="2065fd2d_40"    ><li class="list__item" id="2065fd2d_41" ><p><span class="control" id="2065fd2d_42" >Name</span>: Specify a project name.</p></li><li class="list__item" id="2065fd2d_43" ><p><span class="control" id="2065fd2d_44" >Location</span>: Specify a directory for your project.</p></li><li class="list__item" id="2065fd2d_45" ><p><span class="control" id="2065fd2d_46" >Build System</span>: Make sure that <span class="emphasis" id="2065fd2d_47" >Gradle Kotlin</span> is selected as a <a href="server-dependencies.html" id="2065fd2d_48" data-tooltip="Learn how to add Ktor dependencies to the existing Gradle/Maven project."  >build system</a>.</p></li><li class="list__item" id="2065fd2d_49" ><p><span class="control" id="2065fd2d_50" >Website</span>: Leave the default <code class="code " id="2065fd2d_51"  >example.com</code> value as a domain used to generate a package name.</p></li><li class="list__item" id="2065fd2d_52" ><p><span class="control" id="2065fd2d_53" >Artifact</span>: This field shows a generated artifact name.</p></li><li class="list__item" id="2065fd2d_54" ><p><span class="control" id="2065fd2d_55" >Ktor version</span>: Choose the latest Ktor version.</p></li><li class="list__item" id="2065fd2d_56" ><p><span class="control" id="2065fd2d_57" >Engine</span>: Leave the default <span class="emphasis" id="2065fd2d_58" >Netty</span> <a href="engines.html" id="2065fd2d_59" data-tooltip="
+Learn about engines that process network requests.
+"  >engine</a>.</p></li><li class="list__item" id="2065fd2d_60" ><p><span class="control" id="2065fd2d_61" >Configuration in</span>: Choose <span class="emphasis" id="2065fd2d_62" >HOCON file</span> to specify server parameters in a <a href="create-server.html" id="2065fd2d_63" data-tooltip="
+        Choose how to create a Ktor server - using the 'embeddedServer' function to configure parameters in code or using 'EngineMain' to load server configuration from an external file.
+    "  >dedicated configuration file</a>.</p></li><li class="list__item" id="2065fd2d_64" ><p><span class="control" id="2065fd2d_65" >Add sample code</span>: Disable this option to skip adding sample code for plugins.</p></li></ul><p id="2065fd2d_66" >Click <span class="control" id="2065fd2d_67" >Next</span>.</p></li><li class="list__item" id="2065fd2d_68" ><p id="2065fd2d_69" >On the next page, add the <span class="control" id="2065fd2d_70" >Routing</span>, <span class="control" id="2065fd2d_71" >Content Negotiation</span>, and <span class="control" id="2065fd2d_72" >kotlinx.serialization</span> plugins:</p><figure  id="2065fd2d_73"><img alt="Ktor plugins" title="Ktor plugins" src="images/tutorial_http_api_new_project_plugins.png"  class="article__bordered-element--rounded " width="706" height="548"/></figure><p id="2065fd2d_74" >Click <span class="control" id="2065fd2d_75" >Create</span> and wait until IntelliJ IDEA generates a project and installs the dependencies.</p></li></ol></section><section class="chapter"  ><h2 id="project_setup" data-toc="project_setup"  >Examine the project</h2><p id="2065fd2d_76" >To look at the structure of the <a href="#create_ktor_project" id="2065fd2d_77" data-tooltip="To create a base project for our application using the Ktor plugin, open IntelliJ IDEA and follow the steps below:"  >generated project</a>, let's invoke the <a href="https://www.jetbrains.com/help/idea/project-tool-window.html" id="2065fd2d_78"   data-external="true" rel="noopener noreferrer" >Project view</a>:</p><figure  id="2065fd2d_79"><img alt="Initial project structure" title="Initial project structure" src="images/tutorial_http_api_project_structure.png"  class="" width="481" height="451"/></figure><ul class="list _ul" id="2065fd2d_80"    ><li class="list__item" id="2065fd2d_81" ><p>The <code class="code " id="2065fd2d_82"  >build.gradle.kts</code> file contains <a href="#dependencies" id="2065fd2d_83" data-tooltip="First, let's open the build.gradle.kts file and examine added dependencies:"  >dependencies</a> required for a Ktor server and plugins.</p></li><li class="list__item" id="2065fd2d_84" ><p>The <code class="code " id="2065fd2d_85"  >main/resources</code> folder includes <a href="#configurations" id="2065fd2d_86" data-tooltip="The generated project also includes the application.conf and logback.xml configuration files located in the resources folder:"  >configuration files</a>.</p></li><li class="list__item" id="2065fd2d_87" ><p>The <code class="code " id="2065fd2d_88"  >main/kotlin</code> folder contains the generated <a href="#source_code" id="2065fd2d_89" data-tooltip="The application.conf file configures the entry point of our application to be com.example.ApplicationKt.module. This corresponds to the Application.module() function in Application.kt, which is an application module:"  >source code</a>.</p></li></ul><section class="chapter"  ><h3 id="dependencies" data-toc="dependencies"  >Dependencies</h3><p id="2065fd2d_90" >First, let's open the <code class="code " id="2065fd2d_91"  >build.gradle.kts</code> file and examine added dependencies:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >dependencies {
+    implementation(&quot;io.ktor:ktor-server-core:$ktor_version&quot;)
+    implementation(&quot;io.ktor:ktor-server-netty:$ktor_version&quot;)
+    implementation(&quot;io.ktor:ktor-server-content-negotiation:$ktor_version&quot;)
+    implementation(&quot;io.ktor:ktor-serialization-kotlinx-json:$ktor_version&quot;)
+    implementation(&quot;ch.qos.logback:logback-classic:$logback_version&quot;)
+    testImplementation(&quot;io.ktor:ktor-server-test-host:$ktor_version&quot;)
+    testImplementation(&quot;org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version&quot;)
+    }</div><p id="2065fd2d_93" >Let's briefly go through these dependencies one by one:</p><ul class="list _ul" id="2065fd2d_94"    ><li class="list__item" id="2065fd2d_95" ><p id="2065fd2d_96" ><code class="code " id="2065fd2d_97"  >ktor-server-core</code> adds Ktor's core components to our project.</p></li><li class="list__item" id="2065fd2d_98" ><p id="2065fd2d_99" ><code class="code " id="2065fd2d_100"  >ktor-server-netty</code> adds the Netty <a href="engines.html" id="2065fd2d_101" data-tooltip="
+Learn about engines that process network requests.
+"  >engine</a> to our project, allowing us to use server functionality without having to rely on an external application container.</p></li><li class="list__item" id="2065fd2d_102" ><p id="2065fd2d_103" ><code class="code " id="2065fd2d_104"  >ktor-server-content-negotiation</code> and <code class="code " id="2065fd2d_105"  >ktor-serialization-kotlinx-json</code> provide a convenient mechanism for converting Kotlin objects into a <a href="serialization.html" id="2065fd2d_106" data-tooltip="
+The ContentNegotiation plugin serves two primary purposes: negotiating media types between the client and server and serializing/deserializing the content in a specific format.
+"  >serialized form</a> like JSON, and vice versa. We will use it to format our APIs output, and to consume user input that is structured in JSON. In order to use <code class="code " id="2065fd2d_107"  >ktor-serialization-kotlinx-json</code>, we also have to apply the <code class="code " id="2065fd2d_108"  >plugin.serialization</code> plugin.</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >plugins {
+    id(&quot;org.jetbrains.kotlin.plugin.serialization&quot;) version &quot;1.8.0&quot;
+    }</div></li><li class="list__item" id="2065fd2d_110" ><p id="2065fd2d_111" ><code class="code " id="2065fd2d_112"  >logback-classic</code> provides an implementation of SLF4J, allowing us to see nicely formatted <a href="logging.html" id="2065fd2d_113" data-tooltip="
+Ktor uses SLF4J API as a facade for various logging frameworks (for example, Logback or Log4j) and allows you to log application events.
+"  >logs</a> in a console.</p></li><li class="list__item" id="2065fd2d_114" ><p id="2065fd2d_115" ><code class="code " id="2065fd2d_116"  >ktor-server-test-host</code> and <code class="code " id="2065fd2d_117"  >kotlin-test-junit</code> allow us to <a href="testing.html" id="2065fd2d_118" data-tooltip="
+Learn how to test server Ktor applications using a special testing engine.
+"  >test</a> parts of our Ktor application without having to use the whole HTTP stack in the process. We will use this to define unit tests for our project.</p></li></ul></section><section class="chapter"  ><h3 id="configurations" data-toc="configurations"  >Configurations: application.conf and logback.xml</h3><p id="2065fd2d_119" >The generated project also includes the <code class="code " id="2065fd2d_120"  >application.conf</code> and <code class="code " id="2065fd2d_121"  >logback.xml</code> configuration files located in the <code class="code " id="2065fd2d_122"  >resources</code> folder:</p><ul class="list _ul" id="2065fd2d_123"    ><li class="list__item" id="2065fd2d_124" ><p id="2065fd2d_125" ><code class="code " id="2065fd2d_126"  >application.conf</code> is a configuration file in <a href="https://en.wikipedia.org/wiki/HOCON" id="2065fd2d_127"   data-external="true" rel="noopener noreferrer" >HOCON</a> format. Ktor uses this file to determine the port on which it should run, and it also defines the entry point of our application.</p><div class="code-block" data-lang="none"       data-disable-link-processing="true"  >ktor {
+    deployment {
+    port = 8080
+    port = ${?PORT}
+    }
+    application {
+    modules = [ com.example.ApplicationKt.module ]
+    }
+    }
+</div><p id="2065fd2d_129" >If you'd like to learn more about how a Ktor server is configured, check out the <a href="configuration-file.html" id="2065fd2d_130" data-tooltip="
+        This topic describes how to configure various server parameters in a configuration file.
+        Server parameters include a host address and port, modules to load, and so on.
+    "  >Configuration in a file</a> help topic.</p></li><li class="list__item" id="2065fd2d_131" ><p id="2065fd2d_132" ><code class="code " id="2065fd2d_133"  >logback.xml</code> sets up the basic logging structure for our server. If you'd like to learn more about logging in Ktor, check out the <a href="logging.html" id="2065fd2d_134" data-tooltip="
+Ktor uses SLF4J API as a facade for various logging frameworks (for example, Logback or Log4j) and allows you to log application events.
+"  >Logging</a> topic.</p></li></ul></section><section class="chapter"  ><h3 id="source_code" data-toc="source_code"  >Source code</h3><p id="2065fd2d_135" >The <a href="#configurations" id="2065fd2d_136" data-tooltip="The generated project also includes the application.conf and logback.xml configuration files located in the resources folder:"  >application.conf</a> file configures the entry point of our application to be <code class="code " id="2065fd2d_137"  >com.example.ApplicationKt.module</code>. This corresponds to the <code class="code " id="2065fd2d_138"  >Application.module()</code> function in <code class="code " id="2065fd2d_139"  >Application.kt</code>, which is an application <a href="modules.html" id="2065fd2d_140" data-tooltip="Modules allow you to structure your application by grouping routes."  >module</a>:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >fun main(args: Array&lt;String&gt;): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+    fun Application.module() {
+    configureRouting()
+    configureSerialization()
+    }</div><p id="2065fd2d_142" >This module, in turn, calls the following extension functions:</p><ul class="list _ul" id="2065fd2d_143"    ><li class="list__item" id="2065fd2d_144" ><p id="2065fd2d_145" ><code class="code " id="2065fd2d_146"  >configureRouting</code> is a function defined in <code class="code " id="2065fd2d_147"  >plugins/Routing.kt</code>, which currently doesn't do anything:</p><div class="code-block" data-lang="kotlin"         >
+    fun Application.configureRouting() {
+    routing {
+    }
+    }
+</div><p id="2065fd2d_149" >We'll define the routes for customers and orders in the next chapters.</p></li><li class="list__item" id="2065fd2d_150" ><p id="2065fd2d_151" ><code class="code " id="2065fd2d_152"  >configureSerialization</code> is a function defined in <code class="code " id="2065fd2d_153"  >plugins/Serialization.kt</code>, which installs <code class="code " id="2065fd2d_154"  >ContentNegotiation</code> and enables the <code class="code " id="2065fd2d_155"  >json</code> serializer:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >fun Application.configureSerialization() {
+    install(ContentNegotiation) {
+    json()
+    }
+    }</div></li></ul></section></section><section class="chapter"  ><h2 id="customer_routes" data-toc="customer_routes"  >Customer routes</h2><p id="2065fd2d_157" >First, let's tackle the <code class="code " id="2065fd2d_158"  >Customer</code> side of our application. We need to create a model which defines the data that's associated with a customer. We also need to create a series of endpoints to allow Customers to be added, listed, and deleted.</p><section class="chapter"  ><h3 id="customer_model" data-toc="customer_model"  >Create the Customer model</h3><p id="2065fd2d_159" >For our case, a customer should store some basic information in the form of text: a customer should have an <code class="code " id="2065fd2d_160"  >id</code> by which we can identify them, a first and last name, and an email address. An easy way to model this in Kotlin is by using a data class:</p><ol class="list _decimal" id="2065fd2d_161"  type="1"  ><li class="list__item" id="2065fd2d_162" ><p id="2065fd2d_163" >Create a <a href="https://www.jetbrains.com/help/idea/add-items-to-project.html#new-package" id="2065fd2d_164"   data-external="true" rel="noopener noreferrer" >new package</a> named <code class="code " id="2065fd2d_165"  >models</code> inside <code class="code " id="2065fd2d_166"  >com.example</code>.</p></li><li class="list__item" id="2065fd2d_167" ><p id="2065fd2d_168" >Create a <code class="code " id="2065fd2d_169"  >Customer.kt</code> file in the <code class="code " id="2065fd2d_170"  >models</code> package and add the following code:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >package com.example.models
+
+    import kotlinx.serialization.Serializable
+
+    @Serializable
+    data class Customer(val id: String, val firstName: String, val lastName: String, val email: String)</div><p id="2065fd2d_172" >Note that we are using the <code class="code " id="2065fd2d_173"  >@Serializable</code> annotation from <a href="https://github.com/Kotlin/kotlinx.serialization" id="2065fd2d_174"   data-external="true" rel="noopener noreferrer" >kotlinx.serialization</a>. Together with its Ktor integration, this will allow us to generate the JSON representation we need for our API responses automatically &ndash; as we will see in just a bit.</p></li></ol></section><section class="chapter"  ><h3 id="customer_storage" data-toc="customer_storage"  >Create the Customer storage</h3><p id="2065fd2d_175" >To not complicate the code, for this tutorial, we'll be using an in-memory storage (i.e. a mutable list of <code class="code " id="2065fd2d_176"  >Customer</code>s) &ndash; in a real application, we would be storing this information in a database so that it doesn't get lost after restarting our application. We can add this line right after the data class declaration in <code class="code " id="2065fd2d_177"  >Customer.kt</code> file:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >val customerStorage = mutableListOf&lt;Customer&gt;()</div><p id="2065fd2d_179" >Now that we have a well-defined <code class="code " id="2065fd2d_180"  >Customer</code> class and a storage for our customer objects, it's time we create endpoints and expose them via our API!</p></section><section class="chapter"  ><h3 id="customer_routing" data-toc="customer_routing"  >Define the routing for customers</h3><p id="2065fd2d_181" >We want to respond to <code class="code " id="2065fd2d_182"  >GET</code>, <code class="code " id="2065fd2d_183"  >POST</code>, and <code class="code " id="2065fd2d_184"  >DELETE</code> requests on the <code class="code " id="2065fd2d_185"  >/customer</code> endpoint. As such, let's define our routes with the corresponding HTTP methods.</p><ol class="list _decimal" id="2065fd2d_186"  type="1"  ><li class="list__item" id="2065fd2d_187" ><p id="2065fd2d_188" >Create a new package named <code class="code " id="2065fd2d_189"  >routes</code> inside <code class="code " id="2065fd2d_190"  >com.example</code>.</p></li><li class="list__item" id="2065fd2d_191" ><p id="2065fd2d_192" >Create a <code class="code " id="2065fd2d_193"  >CustomerRoutes.kt</code> file called in the <code class="code " id="2065fd2d_194"  >routes</code> package, and fill it with the following:</p><div class="code-block" data-lang="kotlin"         >
+    package com.example.routes
+
+    import io.ktor.server.routing.*
+
+    fun Route.customerRouting() {
+    route(&quot;/customer&quot;) {
+    get {
+
+    }
+    get(&quot;{id?}&quot;) {
+
+    }
+    post {
+
+    }
+    delete(&quot;{id?}&quot;) {
+
+    }
+    }
+    }
+</div><p id="2065fd2d_196" >In this case, we're using the <code class="code " id="2065fd2d_197"  >route</code> function to group everything that falls under the <code class="code " id="2065fd2d_198"  >/customer</code> endpoint. We then create a block for each HTTP method. This is just one approach how we can structure our routes &ndash; when we tackle the <code class="code " id="2065fd2d_199"  >Order</code> routes in the next chapter, we will see another approach.</p><p id="2065fd2d_200" >Notice also how we actually have two entries for <code class="code " id="2065fd2d_201"  >get</code>: one without a path parameter, and the other with <code class="code " id="2065fd2d_202"  >{id?}</code>. We'll use the first entry to list all customers, and the second entry to display a specific one.</p></li></ol><section class="chapter"  ><h4 id="list_customers" data-toc="list_customers"  >List all customers</h4><p id="2065fd2d_203" >To list all customers, we can return the <code class="code " id="2065fd2d_204"  >customerStorage</code> list by using the <code class="code " id="2065fd2d_205"  >call.respond</code> function in Ktor, which can take a Kotlin object and return it serialized in a specified format. For the <code class="code " id="2065fd2d_206"  >get</code> handler, it looks like this:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >package com.example.routes
+
+    import com.example.models.*
+    import io.ktor.http.*
+    import io.ktor.server.application.*
+    import io.ktor.server.request.*
+    import io.ktor.server.response.*
+    import io.ktor.server.routing.*
+
+    fun Route.customerRouting() {
+    route(&quot;/customer&quot;) {
+    get {
+    if (customerStorage.isNotEmpty()) {
+    call.respond(customerStorage)
+    } else {
+    call.respondText(&quot;No customers found&quot;, status = HttpStatusCode.OK)
+    }
+    }
+    }
+    }</div><p id="2065fd2d_208" >In order for this to work, we need the <code class="code " id="2065fd2d_209"  >ContentNegotiation</code> plugin, which is already installed with the <code class="code " id="2065fd2d_210"  >json</code> serializer in <code class="code " id="2065fd2d_211"  >plugins/Serialization.kt</code>. What does content negotiation do? Let us consider the following request:</p><div class="code-block" data-lang="http"       data-disable-link-processing="true"  >GET http://127.0.0.1:8080/customer
+    Accept: application/json</div><p id="2065fd2d_213" >When a client makes such a request, content negotiation allows the server to examine the <code class="code " id="2065fd2d_214"  >Accept</code> header, see if it can serve this specific type of content, and if so, return the result.</p><p id="2065fd2d_215" >JSON support is powered by <a href="serialization.html" id="2065fd2d_216" data-tooltip="
+The ContentNegotiation plugin serves two primary purposes: negotiating media types between the client and server and serializing/deserializing the content in a specific format.
+"  >kotlinx.serialization</a>. We previously used its annotation <code class="code " id="2065fd2d_217"  >@Serializable</code> to annotate our <code class="code " id="2065fd2d_218"  >Customer</code> data class, meaning that Ktor now knows how to serialize <code class="code " id="2065fd2d_219"  >Customer</code>s (and collections of <code class="code " id="2065fd2d_220"  >Customer</code>s!)</p></section><section class="chapter"  ><h4 id="specific_customer" data-toc="specific_customer"  >Return a specific customer</h4><p id="2065fd2d_221" >Another route we want to support is one that returns a specific customer based on their ID (in this case, <code class="code " id="2065fd2d_222"  >200</code>):</p><div class="code-block" data-lang="http"       data-disable-link-processing="true"  >GET http://127.0.0.1:8080/customer/200
+    Accept: application/json</div><p id="2065fd2d_224" >In Ktor, paths can also contain <a href="routing-in-ktor.html#match_url" id="2065fd2d_225" data-tooltip="A path pattern passed to the routing functions (route, get, post, etc.) is used to match a path component of the URL. A path can contain a sequence of path segments separated by a slash / character."  >parameters</a> that match specific path segments. We can access their value using the indexed access operator (<code class="code " id="2065fd2d_226"  >call.parameters[&quot;myParamName&quot;]</code>). Let's add the following code to the <code class="code " id="2065fd2d_227"  >get(&quot;{id?}&quot;)</code> entry:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >        get(&quot;{id?}&quot;) {
+    val id = call.parameters[&quot;id&quot;] ?: return@get call.respondText(
+    &quot;Missing id&quot;,
+    status = HttpStatusCode.BadRequest
+    )
+    val customer =
+    customerStorage.find { it.id == id } ?: return@get call.respondText(
+    &quot;No customer with id $id&quot;,
+    status = HttpStatusCode.NotFound
+    )
+    call.respond(customer)
+    }</div><p id="2065fd2d_229" >First, we check whether the parameter <code class="code " id="2065fd2d_230"  >id</code> exists in the request. If it does not exist, we respond with a <code class="code " id="2065fd2d_231"  >400 Bad Request</code> status code and an error message, and are done. If the parameter exists, we try to <code class="code " id="2065fd2d_232"  >find</code> the corresponding record in our <code class="code " id="2065fd2d_233"  >customerStorage</code>. If we find it, we'll respond with the object. Otherwise, we'll return a 404 &quot;Not Found&quot; status code with an error message.</p></section><section class="chapter"  ><h4 id="create_customer" data-toc="create_customer"  >Create a customer</h4><p id="2065fd2d_234" >Next, we implement the option for a client to <code class="code " id="2065fd2d_235"  >POST</code> a JSON representation of a client object, which then gets put into our customer storage. Its implementation looks like this:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >        post {
+    val customer = call.receive&lt;Customer&gt;()
+    customerStorage.add(customer)
+    call.respondText(&quot;Customer stored correctly&quot;, status = HttpStatusCode.Created)
+    }</div><p id="2065fd2d_237" ><code class="code " id="2065fd2d_238"  >call.receive</code> integrates with the <a href="#source_code" id="2065fd2d_239" data-tooltip="The application.conf file configures the entry point of our application to be com.example.ApplicationKt.module. This corresponds to the Application.module() function in Application.kt, which is an application module:"  >configured Content Negotiation</a> plugin. Calling it with the generic parameter <code class="code " id="2065fd2d_240"  >Customer</code> automatically deserializes the JSON request body into a Kotlin <code class="code " id="2065fd2d_241"  >Customer</code> object. We can then add the customer to our storage and respond with a status code of <code class="code " id="2065fd2d_242"  >201 Created</code>.</p><p id="2065fd2d_243" >At this point, it is worth highlighting again that in this tutorial, we are also intentionally glancing over issues that could arise from, for example, multiple requests accessing the storage simultaneously. In production, data structures and code that can be accessed from multiple requests/threads at the same time should account for these cases &ndash; something that is out of the scope of this tutorial.</p></section><section class="chapter"  ><h4 id="delete_customer" data-toc="delete_customer"  >Delete a customer</h4><p id="2065fd2d_244" >The implementation for deleting a customer follows a similar procedure as we have used for listing a specific customer. We first get the <code class="code " id="2065fd2d_245"  >id</code> and then modify our <code class="code " id="2065fd2d_246"  >customerStorage</code> accordingly:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >        delete(&quot;{id?}&quot;) {
+    val id = call.parameters[&quot;id&quot;] ?: return@delete call.respond(HttpStatusCode.BadRequest)
+    if (customerStorage.removeIf { it.id == id }) {
+    call.respondText(&quot;Customer removed correctly&quot;, status = HttpStatusCode.Accepted)
+    } else {
+    call.respondText(&quot;Not Found&quot;, status = HttpStatusCode.NotFound)
+    }
+    }</div><p id="2065fd2d_248" >Similar to the definition of our <code class="code " id="2065fd2d_249"  >get</code> request, we make sure that the <code class="code " id="2065fd2d_250"  >id</code> is not null. If the <code class="code " id="2065fd2d_251"  >id</code> is absent, we respond with a <code class="code " id="2065fd2d_252"  >400 Bad Request</code> error.</p></section></section><section class="chapter"  ><h3 id="register_customer_routes" data-toc="register_customer_routes"  >Register the routes</h3><p id="2065fd2d_253" >Up until now, we have only defined our routes inside an extension function on <code class="code " id="2065fd2d_254"  >Route</code> &ndash; so Ktor doesn't know about our routes yet, and we need to register them. Open the <code class="code " id="2065fd2d_255"  >plugins/Routing.kt</code> file and add the following code:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >package com.example.plugins
+
+    import com.example.routes.*
+    import io.ktor.server.application.*
+    import io.ktor.server.routing.*
+
+    fun Application.configureRouting() {
+    routing {
+    customerRouting()
+    }
+    }</div><p id="2065fd2d_257" >As you might remember, the <code class="code " id="2065fd2d_258"  >configureRouting</code> function is already <a href="#source_code" id="2065fd2d_259" data-tooltip="The application.conf file configures the entry point of our application to be com.example.ApplicationKt.module. This corresponds to the Application.module() function in Application.kt, which is an application module:"  >invoked</a> in our <code class="code " id="2065fd2d_260"  >Application.module()</code> function in <code class="code " id="2065fd2d_261"  >Application.kt</code>.</p><p id="2065fd2d_262" >We've now completed the implementation for the customer-related routes in our API. If you would like to validate that everything works right away, you can skip ahead to the chapter <a href="#manual_test" id="2065fd2d_263" data-tooltip="Now that we have all the endpoints ready, it's time to test our application. While we can use any browser to test GET requests, we'll need a separate tool to test the other HTTP methods:"  >Test HTTP endpoints manually</a>. If you can still bear the suspense, we can move on to the implementation of order-related routes.</p></section></section><section class="chapter"  ><h2 id="order_routes" data-toc="order_routes"  >Order routes</h2><p id="2065fd2d_264" >Now that we have API endpoints for <code class="code " id="2065fd2d_265"  >Customer</code>s done, let's move on to <code class="code " id="2065fd2d_266"  >Orders</code>. While some of the implementation is rather similar, we will be using a different way of structuring our application routes, and include routes that sum up the price of individual items in an order.</p><section class="chapter"  ><h3 id="order_model" data-toc="order_model"  >Create the Order model</h3><p id="2065fd2d_267" >The orders we want to store in our system should be identifiable by an order number (which might contain dashes), and should contain a list of order items. These order items should have a textual description, the number of how often this item appears in the order, as well as the price for the individual item (so that we can compute the total price of an order on demand).</p><p id="2065fd2d_268" >Inside the <code class="code " id="2065fd2d_269"  >models</code> package, create a new file called <code class="code " id="2065fd2d_270"  >Order.kt</code> and fill it with the definition of the two data classes:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >package com.example.models
+
+    import kotlinx.serialization.Serializable
+
+    @Serializable
+    data class Order(val number: String, val contents: List&lt;OrderItem&gt;)
+
+    @Serializable
+    data class OrderItem(val item: String, val amount: Int, val price: Double)</div><p id="2065fd2d_272" >We also once again need a place to store our orders. To skip having to define a <code class="code " id="2065fd2d_273"  >POST</code> route &ndash; something you're more than welcome to attempt on your own using the knowledge from the <code class="code " id="2065fd2d_274"  >Customer</code> routes &ndash; we will prepopulate our <code class="code " id="2065fd2d_275"  >orderStorage</code> with some sample orders. We can again define it as a top-level declaration inside the <code class="code " id="2065fd2d_276"  >Order.kt</code> file.</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >val orderStorage = listOf(Order(
+    &quot;2020-04-06-01&quot;, listOf(
+    OrderItem(&quot;Ham Sandwich&quot;, 2, 5.50),
+    OrderItem(&quot;Water&quot;, 1, 1.50),
+    OrderItem(&quot;Beer&quot;, 3, 2.30),
+    OrderItem(&quot;Cheesecake&quot;, 1, 3.75)
+    )),
+    Order(&quot;2020-04-03-01&quot;, listOf(
+    OrderItem(&quot;Cheeseburger&quot;, 1, 8.50),
+    OrderItem(&quot;Water&quot;, 2, 1.50),
+    OrderItem(&quot;Coke&quot;, 2, 1.76),
+    OrderItem(&quot;Ice Cream&quot;, 1, 2.35)
+    ))
+    )</div></section><section class="chapter"  ><h3 id="define_order_routes" data-toc="define_order_routes"  >Define the routing for orders</h3><p id="2065fd2d_278" >We respond to a set of <code class="code " id="2065fd2d_279"  >GET</code> requests with three different patterns:</p><div class="code-block" data-lang="http"       data-disable-link-processing="true"  >GET http://127.0.0.1:8080/order
+    Content-Type: application/json
+
+    ###
+    GET http://127.0.0.1:8080/order/2020-04-06-01
+    Content-Type: application/json
+
+    ###
+    GET http://127.0.0.1:8080/order/2020-04-06-01/total
+    Content-Type: application/json</div><p id="2065fd2d_281" >The first will return all orders, the second will return an order given the <code class="code " id="2065fd2d_282"  >id</code>, and the third will return the total of an order (prices of individual <code class="code " id="2065fd2d_283"  >OrderItems</code> multiplied by number of each item).</p><p id="2065fd2d_284" >With orders, we're going to follow a different pattern when it comes to defining routes. Instead of grouping all routes under a single <code class="code " id="2065fd2d_285"  >route</code> function with different HTTP methods, we'll use individual functions.</p><section class="chapter"  ><h4 id="list_orders" data-toc="list_orders"  >List all and individual orders</h4><p id="2065fd2d_286" >For listing all orders, we'll follow the same pattern as with customers &ndash; the difference being that we're defining it in its own function. Let's create a file called <code class="code " id="2065fd2d_287"  >OrderRoutes.kt</code> inside the <code class="code " id="2065fd2d_288"  >routes</code> package, and start with the implementation of the route inside a function called <code class="code " id="2065fd2d_289"  >listOrdersRoute()</code>.</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >package com.example.routes
+
+    import com.example.models.*
+    import io.ktor.server.application.*
+    import io.ktor.http.*
+    import io.ktor.server.response.*
+    import io.ktor.server.routing.*
+
+    fun Route.listOrdersRoute() {
+    get(&quot;/order&quot;) {
+    if (orderStorage.isNotEmpty()) {
+    call.respond(orderStorage)
+    }
+    }
+    }
+</div><p id="2065fd2d_291" >We apply the same structure to individual orders &ndash; with a similar implementation to customers, but encapsulated in its own function:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >fun Route.getOrderRoute() {
+    get(&quot;/order/{id?}&quot;) {
+    val id = call.parameters[&quot;id&quot;] ?: return@get call.respondText(&quot;Bad Request&quot;, status = HttpStatusCode.BadRequest)
+    val order = orderStorage.find { it.number == id } ?: return@get call.respondText(
+    &quot;Not Found&quot;,
+    status = HttpStatusCode.NotFound
+    )
+    call.respond(order)
+    }
+    }</div></section><section class="chapter"  ><h4 id="totalize_order" data-toc="totalize_order"  >Totalize an order</h4><p id="2065fd2d_293" >Getting the total amount of an order consists of iterating over the items of an order and totalizing this. Implemented as a <code class="code " id="2065fd2d_294"  >totalizeOrderRoute</code> function, it looks like this, which besides the summing process should already look familiar:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >fun Route.totalizeOrderRoute() {
+    get(&quot;/order/{id?}/total&quot;) {
+    val id = call.parameters[&quot;id&quot;] ?: return@get call.respondText(&quot;Bad Request&quot;, status = HttpStatusCode.BadRequest)
+    val order = orderStorage.find { it.number == id } ?: return@get call.respondText(
+    &quot;Not Found&quot;,
+    status = HttpStatusCode.NotFound
+    )
+    val total = order.contents.sumOf { it.price * it.amount }
+    call.respond(total)
+    }
+    }</div><p id="2065fd2d_296" >A small thing to note here is that we are not limited to suffixes of routes for parameters &ndash; as we can see, it's absolutely possible to have a section in the middle be a path parameter (<code class="code " id="2065fd2d_297"  >/order/{id}/total</code>).</p></section></section><section class="chapter"  ><h3 id="register-order-routes" data-toc="register-order-routes"  >Register the routes</h3><p id="2065fd2d_298" >Finally, much like the case of customers, we need to register the routes. Hopefully, this makes it clear why grouping routes makes more sense as the number of routes grows. Still in <code class="code " id="2065fd2d_299"  >plugins/Routing.kt</code>, add the routes for orders as follows:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >package com.example.plugins
+
+    import com.example.routes.*
+    import io.ktor.server.application.*
+    import io.ktor.server.routing.*
+
+    fun Application.configureRouting() {
+    routing {
+    customerRouting()
+    listOrdersRoute()
+    getOrderRoute()
+    totalizeOrderRoute()
+    }
+    }</div><p id="2065fd2d_301" >Now that we have everything wired up, we can finally start testing our application, and see if everything works as we would expect it to!</p></section></section><section class="chapter"  ><h2 id="manual_test" data-toc="manual_test"  >Test HTTP endpoints manually</h2><p id="2065fd2d_302" >Now that we have all the endpoints ready, it's time to test our application. While we can use any browser to test <code class="code " id="2065fd2d_303"  >GET</code> requests, we'll need a separate tool to test the other HTTP methods:</p><ul class="list _ul" id="2065fd2d_304"    ><li class="list__item" id="2065fd2d_305" ><p>If you use IntelliJ IDEA Ultimate, you already have a <a href="https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html" id="2065fd2d_306"   data-external="true" rel="noopener noreferrer" >client</a> that supports <code class="code " id="2065fd2d_307"  >.http</code> files, allowing you to specify and execute requests.</p></li><li class="list__item" id="2065fd2d_308" ><p>If you use IntelliJ IDEA Community or another IDE, you can test your API using <code class="code " id="2065fd2d_309"  >curl</code>.</p></li></ul><section class="chapter"  ><h3 id="create_customer_http" data-toc="create_customer_http"  >Create a customer HTTP test file</h3><p id="2065fd2d_310" >Let's create a new <code class="code " id="2065fd2d_311"  >CustomerTest.http</code> file in the project root:</p><div class="tabs" id="2065fd2d_312"><div class="tabs__content" data-gtm="tab" id="2065fd2d_313"   data-title="CustomerTest.http" ><div class="code-block" data-lang="http"    data-title="HTTP"   data-disable-link-processing="true"  >POST http://127.0.0.1:8080/customer
+    Content-Type: application/json
+
+    {
+    &quot;id&quot;: &quot;100&quot;,
+    &quot;firstName&quot;: &quot;Jane&quot;,
+    &quot;lastName&quot;: &quot;Smith&quot;,
+    &quot;email&quot;: &quot;jane.smith@company.com&quot;
+    }
+
+
+    ###
+    POST http://127.0.0.1:8080/customer
+    Content-Type: application/json
+
+    {
+    &quot;id&quot;: &quot;200&quot;,
+    &quot;firstName&quot;: &quot;John&quot;,
+    &quot;lastName&quot;: &quot;Smith&quot;,
+    &quot;email&quot;: &quot;john.smith@company.com&quot;
+    }
+
+    ###
+    POST http://127.0.0.1:8080/customer
+    Content-Type: application/json
+
+    {
+    &quot;id&quot;: &quot;300&quot;,
+    &quot;firstName&quot;: &quot;Mary&quot;,
+    &quot;lastName&quot;: &quot;Smith&quot;,
+    &quot;email&quot;: &quot;mary.smith@company.com&quot;
+    }
+
+
+    ###
+    GET http://127.0.0.1:8080/customer
+    Accept: application/json
+
+    ###
+    GET http://127.0.0.1:8080/customer/200
+    Accept: application/json
+
+    ###
+    GET http://127.0.0.1:8080/customer/500
+    Accept: application/json
+
+    ###
+    DELETE http://127.0.0.1:8080/customer/100
+
+    ###
+    DELETE http://127.0.0.1:8080/customer/500
+</div></div><div class="tabs__content" data-gtm="tab" id="2065fd2d_315"   data-title="curl" ><div class="code-block" data-lang="http"    data-title="cURL"   data-disable-link-processing="true"  >curl -X POST --location &quot;http://127.0.0.1:8080/customer&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{
+    \&quot;id\&quot;: \&quot;100\&quot;,
+    \&quot;firstName\&quot;: \&quot;Jane\&quot;,
+    \&quot;lastName\&quot;: \&quot;Smith\&quot;,
+    \&quot;email\&quot;: \&quot;jane.smith@company.com\&quot;
+    }&quot;
+
+    curl -X POST --location &quot;http://127.0.0.1:8080/customer&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{
+    \&quot;id\&quot;: \&quot;200\&quot;,
+    \&quot;firstName\&quot;: \&quot;John\&quot;,
+    \&quot;lastName\&quot;: \&quot;Smith\&quot;,
+    \&quot;email\&quot;: \&quot;john.smith@company.com\&quot;
+    }&quot;
+
+    curl -X POST --location &quot;http://127.0.0.1:8080/customer&quot; \
+    -H &quot;Content-Type: application/json&quot; \
+    -d &quot;{
+    \&quot;id\&quot;: \&quot;300\&quot;,
+    \&quot;firstName\&quot;: \&quot;Mary\&quot;,
+    \&quot;lastName\&quot;: \&quot;Smith\&quot;,
+    \&quot;email\&quot;: \&quot;mary.smith@company.com\&quot;
+    }&quot;
+
+    curl -X GET --location &quot;http://127.0.0.1:8080/customer&quot; \
+    -H &quot;Accept: application/json&quot;
+
+    curl -X GET --location &quot;http://127.0.0.1:8080/customer/200&quot; \
+    -H &quot;Accept: application/json&quot;
+
+    curl -X GET --location &quot;http://127.0.0.1:8080/customer/500&quot; \
+    -H &quot;Accept: application/json&quot;
+
+    curl -X DELETE --location &quot;http://127.0.0.1:8080/customer/100&quot;
+
+    curl -X DELETE --location &quot;http://127.0.0.1:8080/customer/500&quot;</div></div></div><p id="2065fd2d_317" >Inside this file, we have now specified a bunch of HTTP requests using all the supported HTTP methods of our API. IntelliJ IDEA now allows us to run each of these requests individually or all together. To really see what's going on, let's run them individually. But first, we need to make sure our API is actually reachable!</p></section><section class="chapter"  ><h3 id="run_api_server" data-toc="run_api_server"  >Run API server</h3><p id="2065fd2d_318" >Before we can run a request, we need to first start our API server. Open the <code class="code " id="2065fd2d_319"  >Application.kt</code> file and click on the <span class="control" id="2065fd2d_320" >Run</span> icon in the gutter:</p><figure  id="2065fd2d_321"><img alt="Run Server" title="Run Server" src="images/run-app.png"  class="" width="706" height="235"/></figure><p id="2065fd2d_322" >Once the server is up and running, we can execute each request by using the <span class="control" id="2065fd2d_323" >Run</span> icon in the gutter:</p><figure  id="2065fd2d_324"><img alt="Run POST Request" title="Run POST Request" src="images/run-post-request.png"  class="" width="706" height="276"/></figure><p id="2065fd2d_325" >If everything is correct, we should see the output in the Run tool window:</p><figure  id="2065fd2d_326"><img alt="Run Output" title="Run Output" src="images/run-output.png"  class="" width="706" height="275"/></figure></section><section class="chapter"  ><h3 id="order_endpoints" data-toc="order_endpoints"  >Order endpoints</h3><p id="2065fd2d_327" >For the order endpoints, we can follow the same procedure: we create a new file called <code class="code " id="2065fd2d_328"  >OrderTest.http</code> in the root of our project and fill it with some HTTP requests:</p><div class="tabs" id="2065fd2d_329"><div class="tabs__content" data-gtm="tab" id="2065fd2d_330"   data-title="OrderTest.http" ><div class="code-block" data-lang="http"    data-title="HTTP"   data-disable-link-processing="true"  >GET http://127.0.0.1:8080/order
+    Content-Type: application/json
+
+    ###
+    GET http://127.0.0.1:8080/order/2020-04-06-01
+    Content-Type: application/json
+
+    ###
+    GET http://127.0.0.1:8080/order/2020-04-06-01/total
+    Content-Type: application/json</div></div><div class="tabs__content" data-gtm="tab" id="2065fd2d_332"   data-title="curl" ><div class="code-block" data-lang="http"    data-title="cURL"   data-disable-link-processing="true"  >curl -X GET --location &quot;http://127.0.0.1:8080/order&quot; \
+    -H &quot;Content-Type: application/json&quot;
+
+    curl -X GET --location &quot;http://127.0.0.1:8080/order/2020-04-06-01&quot; \
+    -H &quot;Content-Type: application/json&quot;
+
+    curl -X GET --location &quot;http://127.0.0.1:8080/order/2020-04-06-01/total&quot; \
+    -H &quot;Content-Type: application/json&quot;</div></div></div><p id="2065fd2d_334" >Running these requests just as the ones before, we should see the expected output &ndash; list of orders, information about one order, and the total of the order.</p></section></section><section class="chapter"  ><h2 id="automated_testing" data-toc="automated_testing"  >Automated testing</h2><p id="2065fd2d_335" >While manual testing is great and necessary, it also makes sense to have <a href="testing.html" id="2065fd2d_336" data-tooltip="
+Learn how to test server Ktor applications using a special testing engine.
+"  >automated testing</a> of endpoints. Ktor allows us to test endpoints without having to start up the entire underlying engine (such as Netty) using the <code class="code " id="2065fd2d_337"  >testApplication</code> function. Inside this function, you need to use the existing Ktor client instance to make requests to your server and verify the results.</p><p id="2065fd2d_338" >Let's write a unit test to ensure that our order route returns properly formatted JSON content. Open the <code class="code " id="2065fd2d_339"  >src/test/kotlin/com/example/ApplicationTest.kt</code> file and replace the existing test class with <code class="code " id="2065fd2d_340"  >OrderRouteTests</code>:</p><div class="code-block" data-lang="kotlin"       data-disable-link-processing="true"  >package com.example
+
+    import io.ktor.client.request.*
+    import io.ktor.client.statement.*
+    import io.ktor.http.*
+    import io.ktor.server.testing.*
+    import kotlin.test.*
+
+    class OrderRouteTests {
+    @Test
+    fun testGetOrder() = testApplication {
+    val response = client.get(&quot;/order/2020-04-06-01&quot;)
+    assertEquals(
+    &quot;&quot;&quot;{&quot;number&quot;:&quot;2020-04-06-01&quot;,&quot;contents&quot;:[{&quot;item&quot;:&quot;Ham Sandwich&quot;,&quot;amount&quot;:2,&quot;price&quot;:5.5},{&quot;item&quot;:&quot;Water&quot;,&quot;amount&quot;:1,&quot;price&quot;:1.5},{&quot;item&quot;:&quot;Beer&quot;,&quot;amount&quot;:3,&quot;price&quot;:2.3},{&quot;item&quot;:&quot;Cheesecake&quot;,&quot;amount&quot;:1,&quot;price&quot;:3.75}]}&quot;&quot;&quot;,
+    response.bodyAsText()
+    )
+    assertEquals(HttpStatusCode.OK, response.status)
+    }
+    }
+</div><aside data-type="tip" class="prompt" data-title="" id="2065fd2d_342" ><p id="2065fd2d_343" >If you set the <span class="control" id="2065fd2d_344" >Configuration in</span> option to <span class="emphasis" id="2065fd2d_345" >Code</span> when <a href="#create_ktor_project" id="2065fd2d_346" data-tooltip="To create a base project for our application using the Ktor plugin, open IntelliJ IDEA and follow the steps below:"  >creating a project</a>, you need to add modules to a test application <a href="testing.html#manual" id="2065fd2d_347" data-tooltip="If you use embeddedServer, you can add modules to a test application manually using the application function:"  >manually</a>:</p><div class="code-block" data-lang="kotlin"         >
+    application {
+    configureRouting()
+    configureSerialization()
+    }
+</div></aside><p id="2065fd2d_349" >Note that since our string contains a lot of quotation marks around keys and values (like <code class="code " id="2065fd2d_350"  >&quot;number&quot;</code>), this is a great place to use <a href="https://kotlinlang.org/docs/basic-types.html#string-literals" id="2065fd2d_351"   data-external="true" rel="noopener noreferrer" >raw strings</a> using triple-quotes (<code class="code " id="2065fd2d_352"  >&quot;&quot;&quot;</code>), saving us the hassle of individually escaping every special character inside the string.</p><p id="2065fd2d_353" >We can now <a href="https://www.jetbrains.com/help/idea/performing-tests.html" id="2065fd2d_354"   data-external="true" rel="noopener noreferrer" >run our unit test from the IDE</a> and see the results. Much like we've done for this endpoint, we can add all other endpoints as tests and automate the testing of our HTTP API.</p><p id="2065fd2d_355" >And just like that, we have finished building our small JSON-based HTTP API. Of course, there are tons of topics you can still explore around Ktor and building APIs with it, so your learning journey doesn't have to stop here!</p><aside data-type="tip" class="prompt" data-title="" id="2065fd2d_356" ><p id="2065fd2d_357" >You can find the resulting project for this tutorial here: <a href="https://github.com/ktorio/ktor-documentation/tree/2.2.2/codeSnippets/snippets/tutorial-http-api" id="2065fd2d_358"   data-external="true" rel="noopener noreferrer" >tutorial-http-api</a>.</p></aside></section><section class="chapter"  ><h2 id="whats_next" data-toc="whats_next"  >What's next</h2><p id="2065fd2d_359" >With this step, we've finalized our HTTP API application. From here on, we can add other plugins such as Authentication, etc.</p><section class="chapter"  ><h3 id="feature_requests" data-toc="feature_requests"  >Feature requests</h3><ul class="list _ul" id="2065fd2d_360"    ><li class="list__item" id="2065fd2d_361" ><p id="2065fd2d_362" ><span class="control" id="2065fd2d_363" >Authentication</span>: currently, the API is open to whomever would like to access it. If you want to restrict access, have a look at Ktor's support for <a href="jwt.html" id="2065fd2d_364" data-tooltip="Required dependencies: io.ktor:ktor-server-auth, io.ktor:ktor-server-auth-jwt"  >JWT</a> and other authentication methods.</p></li><li class="list__item" id="2065fd2d_365" ><p id="2065fd2d_366" ><span class="control" id="2065fd2d_367" >Learn more about route organization!</span> If you'd like to learn about different ways to organize your routes with Ktor, check out the <a href="routing-in-ktor.html" id="2065fd2d_368" data-tooltip="Routing is the core Ktor plugin for handling incoming requests in a server application."  >Routing</a> topic.</p></li><li class="list__item" id="2065fd2d_369" ><p id="2065fd2d_370" ><span class="control" id="2065fd2d_371" >Persistence!</span> Currently, all customers and orders vanish when we stop our application, as we are only storing them in an in-memory storage. You could try integrating your application with a database like PostgreSQL or MongoDB, using one of the plenty projects that allow database access from Kotlin, like <a href="interactive-website-add-persistence.html" id="2065fd2d_372" data-tooltip="Learn how to add persistence to a website using the Exposed ORM framework."  >Exposed</a> or <a href="https://litote.org/kmongo/" id="2065fd2d_373"   data-external="true" rel="noopener noreferrer" >KMongo</a>.</p></li><li class="list__item" id="2065fd2d_374" ><p id="2065fd2d_375" ><span class="control" id="2065fd2d_376" >Integrate with a client!</span> Now that we are exposing data, it would make sense to explore how this data can be consumed again! Try writing an API client using the <a href="create-client.html" id="2065fd2d_377" data-tooltip="Learn how to create and configure the Ktor client."  >Ktor HTTP client</a>, for example, or try accessing it from a website using JavaScript or Kotlin/JS!</p><p id="2065fd2d_378" >To make sure your API works nicely with <span class="control" id="2065fd2d_379" >browser clients</span>, you should also set up a policy for <a href="cors.html" id="2065fd2d_380" data-tooltip="Required dependencies: io.ktor:ktor-server-cors"  >Cross-Origin Resource Sharing (CORS)</a>. The simplest and most permissive way to do this with Ktor would be by adding the following snippet to the top of <code class="code " id="2065fd2d_381"  >Application.module()</code>:</p><div class="code-block" data-lang="kotlin"         >
+    install(CORS) {
+    anyHost()
+    }
+</div></li></ul></section></section><div class="last-modified"> Last modified: 14 December 2022</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom">  <a class="navigation-links__prev" href="intellij-idea.html">Creating a new Ktor project</a>   <a class="navigation-links__next" href="creating-static-website.html">Creating a static website</a>  </div></article><div id="disqus_thread"></div></div></section></main></div>  <script src="https://resources.jetbrains.com/storage/help-app/v5/app.js"></script></body></html>
