@@ -1,6 +1,7 @@
-package com.example.routes
+package com.staffbase.communigame.routes
 
-import com.example.models.* // Imports everything in models, doesn't work in Staffbase backend. Use .score
+import com.staffbase.communigame.models.Score
+import com.staffbase.communigame.models.scoreStorage
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
