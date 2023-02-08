@@ -1,7 +1,7 @@
 # CommuniGame-Backend
 
 There are 2 kinds of models; `Player` and `Score`. <br>
-Player can be called through `com.example/players/` and looks like (in JSON): 
+Player can be called through `com.staffbase.communigame/players/` and looks like (in JSON): 
 ````
 {
     "id": "1",
@@ -11,7 +11,7 @@ Player can be called through `com.example/players/` and looks like (in JSON):
 This pattern, without the id when using a DB, can be used with POST to create a new Player.<br>
 
 <br>
-Score can be called through `com.example/scores/{id}` and looks like (in JSON):
+Score can be called through `com.staffbase.communigame/scores/{id}` and looks like (in JSON):
 
 ````
 {

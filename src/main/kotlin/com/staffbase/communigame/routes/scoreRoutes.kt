@@ -1,23 +1,24 @@
 package com.staffbase.communigame.routes
 
+import com.staffbase.communigame.dto.ScoreCreationDto
+import com.staffbase.communigame.dto.ScoreDto
 import com.staffbase.communigame.models.Score
 import com.staffbase.communigame.models.scoreStorage
+import com.staffbase.communigame.service.ScoreService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.scoreRouting() {
+fun Route.scoreRouting(scoreService: ScoreService) {
     route("/scores") {
         get {
-            if (scoreStorage.isNotEmpty()) {
-                call.respond(scoreStorage)
-            } else {
-                call.respondText("No scores found", status = HttpStatusCode.OK)
-            }
+            call.respond(scoreService.getAllScores().map {
+                ScoreDto(it.id, it.playerId, it.points)
+            })
         }
-        get("{id?}") {
+        get("{id}") {
             val id = call.parameters["id"] ?: return@get call.respondText(
                 "Missing id",
                 status = HttpStatusCode.BadRequest
@@ -29,22 +30,22 @@ fun Route.scoreRouting() {
             (in this case, "return@get call.respondText(...)"). In Kotlin, it is called the Elvis operator.
              */
             val score =
-                scoreStorage.find { it.id == id } ?: return@get call.respondText(
+                scoreService.getScoreById(id) ?: return@get call.respondText(
                     "No score with id $id",
                     status = HttpStatusCode.NotFound
                 )
-            call.respond(score)
+            call.respond(ScoreDto(score.id, score.playerId, score.points))
         }
         post {
-            val score = call.receive<Score>()
-            scoreStorage.add(score)
-            call.respondText("Highscore stored correctly", status = HttpStatusCode.Created)
-            // call.respondText can probably be removed
+            val score = call.receive<ScoreCreationDto>()
+            val created = scoreService.createNewScore(score.playerId, score.points)
+            call.respond(status = HttpStatusCode.Created,
+                message = ScoreDto(created.id, created.playerId, created.points))
         }
         delete("{id?}") {
             val id = call.parameters["id"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            if (scoreStorage.removeIf { it.id == id }) {
-                call.respondText("Highscore removed correctly", status = HttpStatusCode.Accepted)
+            if (scoreService.removeById(id)) {
+                call.respondText("Score removed correctly", status = HttpStatusCode.Accepted)
             } else {
                 call.respondText("Not Found", status = HttpStatusCode.NotFound)
             }
