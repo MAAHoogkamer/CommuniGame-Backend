@@ -27,5 +27,6 @@ If not, the name will be added to the player table and will be given an id.<br>
 When a player is deleted, all scores corresponding to it must be deleted.<br>
 <details>
 <summary>To Do</summary>
-*  
+*  How, when the scores are called for the scoreboard, will the names
+    corresponding to the playerIds be called and displayed? <br>
 </details>
