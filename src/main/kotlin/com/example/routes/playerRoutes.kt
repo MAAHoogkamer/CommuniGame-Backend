@@ -36,6 +36,9 @@ fun Route.playerRouting() {
         }
         post {
             val player = call.receive<Player>()
+            if(player.id != null) {
+                call.respondText("Can't transfer ID", status = HttpStatusCode.BadRequest)
+            }
             playerStorage.add(player)
             call.respondText("Player stored correctly", status = HttpStatusCode.Created)
             // call.respondText can probably be removed
