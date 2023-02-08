@@ -19,5 +19,5 @@ fun Application.module() {
     scoreService.createNewScore("13", 512)
     configureSerialization()
 
-    configureRouting(playerService)
+    configureRouting(playerService, scoreService)
 }

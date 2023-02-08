@@ -2,7 +2,7 @@ package com.staffbase.communigame.service.inmem
 
 import com.staffbase.communigame.models.Player
 import com.staffbase.communigame.service.PlayerService
-
+// Here be the In Memory Interface functions (= without using database, testing)
 class InMemoryPlayerService : PlayerService {
     var players = mutableListOf<Player>()
 
