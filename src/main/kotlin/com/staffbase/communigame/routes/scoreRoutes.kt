@@ -51,4 +51,20 @@ fun Route.scoreRouting(scoreService: ScoreService) {
             }
         }
     }
+    // scores/byplayer/{id}
+    // For getting all scores tied to a player id
+    route("/scores/byplayer") {
+        get("{id}") {
+            val playerId = call.parameters["id"] ?: return@get call.respondText(
+                "Missing player id",
+                status = HttpStatusCode.BadRequest
+            )
+            val score =
+                scoreService.getScoresByPlayerId(playerId) ?: return@get call.respondText(
+                    "No score with id $id",
+                    status = HttpStatusCode.NotFound
+                )
+            call.respond(ScoreDto(score.id, score.playerId, score.points))
+        }
+    }
 }

@@ -26,4 +26,8 @@ class InMemoryScoreService : ScoreService {
     override fun removeById(id: String): Boolean {
         return scores.removeIf { it.id == id }
     }
+
+    override fun getScoresByPlayerId(playerId: String): List<Score> {
+        return scores.filter { it.playerId == playerId }
+    }
 }

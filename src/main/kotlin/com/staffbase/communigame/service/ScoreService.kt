@@ -8,4 +8,5 @@ interface ScoreService {
     fun getAllScores(): List<Score>
     fun getScoreById(id: String): Score?
     fun removeById(id: String): Boolean
+    fun getScoresByPlayerId(id: String): List<Score>
 }
