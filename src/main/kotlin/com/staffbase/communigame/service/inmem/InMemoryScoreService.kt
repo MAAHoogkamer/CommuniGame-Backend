@@ -8,9 +8,9 @@ class InMemoryScoreService : ScoreService {
 
     var indexCounter: Int = 0
 
-    override fun createNewScore(name: String, points: Int): Score {
+    override fun createNewScore(id: String, playerId: String, points: Int): Score {
         // not thread safe, ignore for now
-        val score = Score((++indexCounter).toString(), name)
+        val score = Score((++indexCounter).toString(), id)
         scores.add(score)
         return score
     }

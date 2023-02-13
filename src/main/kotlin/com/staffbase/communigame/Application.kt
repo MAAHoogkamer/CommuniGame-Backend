@@ -12,11 +12,15 @@ fun main(args: Array<String>): Unit =
 @Suppress("unused") // application.conf references the main function. This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
     val playerService = InMemoryPlayerService()
-    // add test data
-    playerService.createNewPlayer("Rosa")
     val scoreService = InMemoryScoreService()
     // add test data
-    scoreService.createNewScore("13", 512)
+    playerService.createNewPlayer("Rosa")
+    scoreService.createNewScore("1", 512)
+    scoreService.createNewScore("1", 336)
+    scoreService.createNewScore("1", 451)
+    playerService.createNewPlayer("Karl")
+    scoreService.createNewScore("2", 1043)
+    scoreService.createNewScore("2", 732)
     configureSerialization()
 
     configureRouting(playerService, scoreService)
