@@ -61,6 +61,16 @@ fun Route.scoreRouting(scoreService: ScoreService) {
                 ScoreDto(it.id, it.playerId, it.points)
             })
         }
+        /*
+        'get("/byplayer/{id}")' = Endpoint definition.
+        'val playerId = call.parameters["id"]' variable value = gets id value from the URL path.
+        'call.parameters' map contains all of the URL parameters and query parameters in the incoming HTTP request.
+        '?: return@get call.respondText(...)' handles the case where the id parameter is missing.
+        'call.respond(scoreService.getScoresByPlayerId(playerId).map { ScoreDto(it.id, it.playerId, it.points) })'
+        calls the getScoresByPlayerId of scoreService, retrieves all scores associated with the playerid.
+        The returned list of Score objects is then transformed(/mapped) into a list of ScoreDto objects,
+         and using call.respond serializes the data (in JSON) and sends it back as response to the HTTP request.
+         */
         // Get the 20 best scores
         get("/top20") {
             call.respond(scoreService.getAllScores().sortedByDescending { it.points }.take(20).map {
