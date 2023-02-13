@@ -50,11 +50,9 @@ fun Route.scoreRouting(scoreService: ScoreService) {
                 call.respondText("Not Found", status = HttpStatusCode.NotFound)
             }
         }
-    }
-    // scores/byplayer/{id}
-    // For getting all scores tied to a player id
-    route("/scores/byplayer") {
-        get("{id}") {
+        // scores/byplayer/{id}
+        // For getting all scores tied to a player id
+        get("/scores/byplayer/{id}") {
             val playerId = call.parameters["id"] ?: return@get call.respondText(
                 "Missing player id",
                 status = HttpStatusCode.BadRequest
