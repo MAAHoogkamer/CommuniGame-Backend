@@ -52,7 +52,7 @@ fun Route.scoreRouting(scoreService: ScoreService) {
         }
         // scores/byplayer/{id}
         // For getting all scores tied to a player id
-        get("/scores/byplayer/{id}") {
+        get("/byplayer/{id}") {
             val playerId = call.parameters["id"] ?: return@get call.respondText(
                 "Missing player id",
                 status = HttpStatusCode.BadRequest
@@ -61,5 +61,21 @@ fun Route.scoreRouting(scoreService: ScoreService) {
                 ScoreDto(it.id, it.playerId, it.points)
             })
         }
+        // Get the 20 best scores
+        get("/top20") {
+            call.respond(scoreService.getAllScores().sortedByDescending { it.points }.take(20).map {
+                ScoreDto(it.id, it.playerId, it.points)
+            })
+        }
+        /*
+        'scoreService.getAllScores()' uses the existing function to retrieve all the scores from the scoreService.
+        'sortedByDescending { it.points }' sorts the list in descending order, based on points.
+        'it.points' refers to points property of each individual Score in the list.
+        'take(20)' takes the first 20 items from the list.
+        'map { ScoreDto(it.id, it.playerId, it.points) }' transforms(/maps) each Score in the list into a ScoreDto.
+        'it.id' 'it.playerId' 'it.points' refer to id playerId & points properties of each Score.
+        'call.respond' is called with the list of ScoreDtos as an argument.
+            This function sends this list of ScoreDtos.
+         */
     }
 }
