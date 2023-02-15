@@ -62,11 +62,11 @@ fun Route.playerRouting(playerService: PlayerService, scoreService: ScoreService
                 "Missing player name",
                 status = HttpStatusCode.BadRequest
             )
-            val player = playerService.getPlayerByName(name) ?: return@get call.respondText(
+            val player = playerService.getPlayerIdByName(name) ?: return@get call.respondText(
                 "No player found with name $name",
                 status = HttpStatusCode.NotFound
             )
-            call.respond(scoreService.getScoresByPlayerId(player.id).map {
+            call.respond(scoreService.getScoresByPlayerId(player).map {
                 ScoreDto(it.id, it.playerId, it.points)
             })
         }
