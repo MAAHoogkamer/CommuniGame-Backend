@@ -8,8 +8,12 @@ class InMemoryPlayerService : PlayerService {
 
     var indexCounter: Int = 0
 
-    override fun createNewPlayer(name: String): Player {
+    override fun createNewPlayer(name: String): Player? {
         // not thread safe, ignore for now
+        if (players.any { it.name == name }) {
+            // If player with that name already exists:
+            return null
+        }
         val player = Player((++indexCounter).toString(), name)
         players.add(player)
         return player

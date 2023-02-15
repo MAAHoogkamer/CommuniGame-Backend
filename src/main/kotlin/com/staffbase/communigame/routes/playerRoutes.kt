@@ -44,8 +44,14 @@ fun Route.playerRouting(playerService: PlayerService, scoreService: ScoreService
         }
         post {
             val player = call.receive<PlayerCreationDto>()
+            // val player receives the Dto send by the post request
             val created = playerService.createNewPlayer(player.name)
-            call.respond(status = HttpStatusCode.Created, message = PlayerDto(created.id, created.name))
+            // uses createNewPlayer, and depending on if successful or name is already taken:
+            if (created != null) {
+                call.respond(status = HttpStatusCode.Created, message = PlayerDto(created.id, created.name))
+            } else {
+                call.respondText("That name already exists.", status = HttpStatusCode.Conflict)
+            }
         }
         delete("{id?}") {
             val id = call.parameters["id"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
@@ -55,9 +61,9 @@ fun Route.playerRouting(playerService: PlayerService, scoreService: ScoreService
                 call.respondText("Not Found", status = HttpStatusCode.NotFound)
             }
         }
-        // players/byplayer/{name}
+        // players/allscoresof/{name}
         // For getting all scores by player name
-        get("/byplayer/{name}") {
+        get("/allscoresof/{name}") {
             val name = call.parameters["name"] ?: return@get call.respondText(
                 "Missing player name",
                 status = HttpStatusCode.BadRequest
