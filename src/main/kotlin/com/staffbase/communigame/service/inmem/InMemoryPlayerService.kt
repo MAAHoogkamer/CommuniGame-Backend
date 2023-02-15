@@ -28,6 +28,8 @@ class InMemoryPlayerService : PlayerService {
     }
 
     override fun getPlayerIdByName(name: String): String? {
+        // String? is the return type. It can return a String or a null value.
+        // If the nme is found, the id is returned. Otherwise null is returned.
         return players.find { it.name == name }?.id
         /* ?.id: If find returns a non-null Player object, the safe call operator (?.)
         is used to access its id property. If the Player object is null, the entire expression evaluates to null
