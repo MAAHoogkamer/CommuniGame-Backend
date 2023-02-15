@@ -26,4 +26,8 @@ class InMemoryPlayerService : PlayerService {
     override fun removeById(id: String): Boolean {
         return players.removeIf { it.id == id }
     }
+
+    override fun getPlayerByName(name: String): Player? {
+        return players.find { it.name == name }
+    }
 }

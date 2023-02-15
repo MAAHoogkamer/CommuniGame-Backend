@@ -2,6 +2,7 @@ package com.staffbase.communigame.routes
 
 import com.staffbase.communigame.dto.PlayerCreationDto
 import com.staffbase.communigame.dto.PlayerDto
+import com.staffbase.communigame.dto.ScoreDto
 import com.staffbase.communigame.service.PlayerService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -52,6 +53,20 @@ fun Route.playerRouting(playerService: PlayerService) {
             } else {
                 call.respondText("Not Found", status = HttpStatusCode.NotFound)
             }
+        }
+        // players/byplayer/{name}
+        // For getting all scores tied to a player id
+        get("/byplayer/{name}") {
+            val name = call.parameters["name"] ?: return@get call.respondText(
+                "Missing player name",
+                status = HttpStatusCode.BadRequest
+            )
+            val playerId = playerService.getPlayerById()
+                /*
+            call.respond(scoreService.getScoresByPlayerId(playerId).map {
+                ScoreDto(it.id, it.playerId, it.points)
+                 */
+            })
         }
     }
 }
