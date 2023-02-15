@@ -27,7 +27,10 @@ class InMemoryPlayerService : PlayerService {
         return players.removeIf { it.id == id }
     }
 
-    override fun getPlayerByName(name: String): Player? {
-        return players.find { it.name == name }
+    override fun getPlayerIdByName(name: String): String? {
+        return players.find { it.name == name }?.id
+        /* ?.id: If find returns a non-null Player object, the safe call operator (?.)
+        is used to access its id property. If the Player object is null, the entire expression evaluates to null
+         */
     }
 }

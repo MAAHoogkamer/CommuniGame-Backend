@@ -4,6 +4,7 @@ import com.staffbase.communigame.dto.PlayerCreationDto
 import com.staffbase.communigame.dto.PlayerDto
 import com.staffbase.communigame.dto.ScoreDto
 import com.staffbase.communigame.service.PlayerService
+import com.staffbase.communigame.service.ScoreService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
@@ -16,7 +17,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 
 // API
-fun Route.playerRouting(playerService: PlayerService) {
+fun Route.playerRouting(playerService: PlayerService, scoreService: ScoreService) {
     route("/players") {
         get {
             call.respond(playerService.getAllPlayers().map {
@@ -55,17 +56,18 @@ fun Route.playerRouting(playerService: PlayerService) {
             }
         }
         // players/byplayer/{name}
-        // For getting all scores tied to a player id
+        // For getting all scores by player name
         get("/byplayer/{name}") {
             val name = call.parameters["name"] ?: return@get call.respondText(
                 "Missing player name",
                 status = HttpStatusCode.BadRequest
             )
-            val playerId = playerService.getPlayerById()
-                /*
-            call.respond(scoreService.getScoresByPlayerId(playerId).map {
+            val player = playerService.getPlayerByName(name) ?: return@get call.respondText(
+                "No player found with name $name",
+                status = HttpStatusCode.NotFound
+            )
+            call.respond(scoreService.getScoresByPlayerId(player.id).map {
                 ScoreDto(it.id, it.playerId, it.points)
-                 */
             })
         }
     }

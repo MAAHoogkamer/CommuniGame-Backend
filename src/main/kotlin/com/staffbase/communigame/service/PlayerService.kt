@@ -7,4 +7,4 @@ interface PlayerService {
     fun getAllPlayers(): List<Player>
     fun getPlayerById(id: String): Player?
     fun removeById(id: String): Boolean
-    fun getPlayerByName(name: String): Player?
+    fun getPlayerIdByName(name: String): String?
