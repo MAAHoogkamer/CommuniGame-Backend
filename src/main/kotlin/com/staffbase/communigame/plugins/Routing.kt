@@ -10,6 +10,6 @@ import io.ktor.server.application.*
 fun Application.configureRouting(playerService: InMemoryPlayerService, scoreService: InMemoryScoreService) {
     routing {
         scoreRouting(scoreService)
-        playerRouting(playerService)
+        playerRouting(playerService, scoreService)
     }
 }

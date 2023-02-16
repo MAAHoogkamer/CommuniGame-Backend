@@ -2,8 +2,6 @@ package com.staffbase.communigame.routes
 
 import com.staffbase.communigame.dto.ScoreCreationDto
 import com.staffbase.communigame.dto.ScoreDto
-import com.staffbase.communigame.models.Score
-import com.staffbase.communigame.models.scoreStorage
 import com.staffbase.communigame.service.ScoreService
 import io.ktor.http.*
 import io.ktor.server.application.*
