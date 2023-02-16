@@ -11,7 +11,7 @@ There are 2 kinds of models; `Player` and `Score`. <br>
     "name": "Rosa"
 }
 ````
-* The following JSON pattern can be used with POST to create a new Player.<br>
+* Use he following JSON pattern with POST on `com.staffbase.communigame/players` to create a new Player.<br>
 ```
 {
     "name": "Ernst"
@@ -27,7 +27,7 @@ There are 2 kinds of models; `Player` and `Score`. <br>
     "points": "1233"
 }
 ````
-* The following pattern can be used with POST to create a new Score.<br>
+* Use the following JSON pattern with POST on `com.staffbase.communigame/scores` to create a new Score.<br>
 ```
 {
     "playerId": "2",
