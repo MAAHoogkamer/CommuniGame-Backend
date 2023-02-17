@@ -1,7 +1,9 @@
 package com.staffbase.communigame.routes
 
 import com.staffbase.communigame.dto.ScoreCreationDto
+import com.staffbase.communigame.dto.ScoreCreationWithNameDto
 import com.staffbase.communigame.dto.ScoreDto
+import com.staffbase.communigame.service.PlayerService
 import com.staffbase.communigame.service.ScoreService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -9,7 +11,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.scoreRouting(scoreService: ScoreService) {
+fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService) {
     route("/scores") {
         get {
             call.respond(scoreService.getAllScores().map {
@@ -85,5 +87,15 @@ fun Route.scoreRouting(scoreService: ScoreService) {
         'call.respond' is called with the list of ScoreDtos as an argument.
             This function sends this list of ScoreDtos.
          */
+        post("/returningplayer/") {
+            val (name, points) = call.receive<ScoreCreationWithNameDto>()
+            val playerId = playerService.getPlayerIdByName(name) ?: return@post call.respondText(
+                "Player not found",
+                status = HttpStatusCode.NotFound
+            )
+            val created = scoreService.createNewScore(playerId, points)
+            call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
+        }
+
     }
 }

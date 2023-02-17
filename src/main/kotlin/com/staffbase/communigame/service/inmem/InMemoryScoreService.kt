@@ -27,21 +27,7 @@ class InMemoryScoreService : ScoreService {
         return scores.removeIf { it.id == id }
     }
 
-    override fun getScoresByPlayerId(playerId: String): List<Score> {
-        return scores.filter { it.playerId == playerId }
-    }
-
-    override fun createNewScoreReturningPlayer(playerId: String, points: Int): Score {
-        // not thread safe, ignore for now
-        val score = Score((++indexCounter).toString(), playerId, points)
-        scores.add(score)
-        return score
-    }
-
-    override fun createNewScoreNewPlayer(playerId: String, points: Int): Score {
-        // not thread safe, ignore for now
-        val score = Score((++indexCounter).toString(), playerId, points)
-        scores.add(score)
-        return score
+    override fun getScoresByPlayerId(id: String): List<Score> {
+        return scores.filter { it.playerId == id }
     }
 }

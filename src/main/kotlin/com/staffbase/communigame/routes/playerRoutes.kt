@@ -76,5 +76,17 @@ fun Route.playerRouting(playerService: PlayerService, scoreService: ScoreService
                 ScoreDto(it.id, it.playerId, it.points)
             })
         }
+        //
+        post("/newplayer/") {
+            val player = call.receive<PlayerCreationDto>()
+            // val player receives the Dto send by the post request
+            val created = playerService.createNewPlayer(player.name)
+            // uses createNewPlayer, and depending on if successful or name is already taken:
+            if (created != null) {
+                call.respond(status = HttpStatusCode.Created, message = PlayerDto(created.id, created.name))
+            } else {
+                call.respondText("That name already exists.", status = HttpStatusCode.Conflict)
+            }
+        }
     }
 }
