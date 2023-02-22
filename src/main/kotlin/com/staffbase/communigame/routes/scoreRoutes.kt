@@ -96,6 +96,14 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
             val created = scoreService.createNewScore(playerId, points)
             call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
         }
-
+        post("/newplayer/") {
+            val (name, points) = call.receive<ScoreCreationWithNameDto>()
+            val playerId = playerService.getPlayerIdByName(name) ?: return@post call.respondText(
+                "Player not found",
+                status = HttpStatusCode.NotFound
+            )
+            val created = scoreService.createNewScore(playerId, points)
+            call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
+        }
     }
 }
