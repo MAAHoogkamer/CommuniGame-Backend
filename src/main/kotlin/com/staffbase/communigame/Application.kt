@@ -17,14 +17,8 @@ fun main(args: Array<String>): Unit =
 @Suppress("unused") // application.conf references the main function. This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
     install(CORS) {
-        method(HttpMethod.Options)
-        method(HttpMethod.Post)
-        allowCredentials = true
-        allowNonSimpleContentTypes = true
-        header("Access-Control-Allow-Origin")
-        header("Access-Control-Allow-Credentials", "true")
-        header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-        anyHost()
+        allowHost("localhost:9000")
+        allowHeader(HttpHeaders.ContentType)
     }
     val playerService = InMemoryPlayerService()
     val scoreService = InMemoryScoreService()
