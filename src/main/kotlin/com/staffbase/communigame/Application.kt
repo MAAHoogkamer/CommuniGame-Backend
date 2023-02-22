@@ -5,12 +5,27 @@ import com.staffbase.communigame.plugins.configureRouting
 import com.staffbase.communigame.plugins.configureSerialization
 import com.staffbase.communigame.service.inmem.InMemoryPlayerService
 import com.staffbase.communigame.service.inmem.InMemoryScoreService
+import io.ktor.http.*
+
+// Imports for using CORS:
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.netty.*
 
 fun main(args: Array<String>): Unit =
-    io.ktor.server.netty.EngineMain.main(args)
+    EngineMain.main(args)
 
 @Suppress("unused") // application.conf references the main function. This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
+    install(CORS) {
+        method(HttpMethod.Options)
+        method(HttpMethod.Post)
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+        header("Access-Control-Allow-Origin")
+        header("Access-Control-Allow-Credentials", "true")
+        header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        anyHost()
+    }
     val playerService = InMemoryPlayerService()
     val scoreService = InMemoryScoreService()
     // add test data

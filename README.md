@@ -43,6 +43,7 @@ If not, the name will be added to the player table and will be given an id.<br>
 When a player is deleted, all scores corresponding to it must be deleted.<br>
 <details>
 <summary>To Do</summary>
+* !!!! CORS restrictions mudt be updated !!!! <br>
 <del>*  How, when the scores are called for the scoreboard, will the names
     corresponding to the playerIds be called and displayed?</del> <br>
 * When posting new score, automatically look up playerId corresponding to new name. <br>
