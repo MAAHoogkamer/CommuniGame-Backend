@@ -96,14 +96,23 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
             val created = scoreService.createNewScore(playerId, points)
             call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
         }
+        /*
+        First val contains name and points received from the call
+        Second val looks up playerId corresponding to the name
+        Third val creates a new score using the playerId and points
+        The call.respond gives the created score back
+        ...
+        newplayer is basically the same, except the second variable creates a new player with the given name
+        if it isn't already taken, and the id given  to the name is extracted and used for the score creation
+         */
         post("/newplayer/") {
             val (name, points) = call.receive<ScoreCreationWithNameDto>()
-            val playerId = playerService.getPlayerIdByName(name) ?: return@post call.respondText(
-                "Player not found",
+            val (id) = playerService.createNewPlayer(name) ?: return@post call.respondText(
+                "That name already exists.",
                 status = HttpStatusCode.NotFound
             )
-            val created = scoreService.createNewScore(playerId, points)
-            call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
+            val created = scoreService.createNewScore(id, points)
+            call.respond(status = HttpStatusCode.Conflict, message = ScoreDto(created.id, created.playerId, created.points))
         }
     }
 }
