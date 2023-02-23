@@ -112,7 +112,7 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
                 status = HttpStatusCode.NotFound
             )
             val created = scoreService.createNewScore(id, points)
-            call.respond(status = HttpStatusCode.Conflict, message = ScoreDto(created.id, created.playerId, created.points))
+            call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
         }
     }
 }
