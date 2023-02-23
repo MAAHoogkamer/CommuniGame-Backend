@@ -8,4 +8,5 @@ interface PlayerService {
     fun getPlayerById(id: String): Player?
     fun removeById(id: String): Boolean
     fun getPlayerIdByName(name: String): String?
+    fun getPlayerNameById(playerId: String): String?
 }

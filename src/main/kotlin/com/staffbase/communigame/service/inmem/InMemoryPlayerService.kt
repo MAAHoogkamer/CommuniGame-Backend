@@ -39,4 +39,7 @@ class InMemoryPlayerService : PlayerService {
         is used to access its id property. If the Player object is null, the entire expression evaluates to null
          */
     }
+    override fun getPlayerNameById(playerId: String): String? {
+        return players.find { it.id == playerId }?.name
+    }
 }

@@ -73,12 +73,15 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
          */
         // Get the 20 best scores
         get("/top20") {
-            call.respond(scoreService.getAllScores().sortedByDescending { it.points }.take(20).map {
-                ScoreDto(it.id, it.playerId, it.points)
-            })
+            val top20Scores = scoreService.getAllScores().sortedByDescending { it.points }.take(20)
+            val top20ScoreDtos = top20Scores.map { score ->
+                val playerName = playerService.getPlayerNameById(score.playerId) ?: "Unknown player"
+                ScoreDto(score.id, playerName, score.points)
+            }
+            call.respond(top20ScoreDtos)
         }
+
         /*
-        'scoreService.getAllScores()' uses the existing function to retrieve all the scores from the scoreService.
         'sortedByDescending { it.points }' sorts the list in descending order, based on points.
         'it.points' refers to points property of each individual Score in the list.
         'take(20)' takes the first 20 items from the list.
