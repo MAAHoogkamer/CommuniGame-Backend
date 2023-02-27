@@ -71,9 +71,9 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
         The returned list of Score objects is then transformed(/mapped) into a list of ScoreDto objects,
          and using call.respond serializes the data (in JSON) and sends it back as response to the HTTP request.
          */
-        // Get the 20 best scores
-        get("/top20") {
-            call.respond(scoreService.getAllScores().sortedByDescending { it.points }.take(20).map {
+        // Get the 10 best scores
+        get("/top10") {
+            call.respond(scoreService.getAllScores().sortedByDescending { it.points }.take(10).map {
                 ScoreDto(it.id, playerService.getPlayerNameById(it.playerId) ?: "Unknown", it.points)
             })
         }

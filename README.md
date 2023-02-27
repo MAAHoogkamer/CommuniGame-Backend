@@ -35,7 +35,7 @@ There are 2 kinds of models; `Player` and `Score`. <br>
 }
 ```
 * Using GET on `com.staffbase.communigame/allscoresof/{name}` returns a list with all scores of a specific name. <br>
-* Using GET on `com.staffbase.communigame/scores/top20` returns a list of the 20 best scores. <br> 
+* Using GET on `com.staffbase.communigame/scores/top10` returns a list of the 10 best scores. <br> 
 
 The tables will be linked so that the name corresponding to the playerId will be used.<br>
 This also means that, when posting a new score, a check must be done if a name already exists.<br>
