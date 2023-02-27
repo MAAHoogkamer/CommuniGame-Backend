@@ -73,12 +73,9 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
          */
         // Get the 20 best scores
         get("/top20") {
-            val top20Scores = scoreService.getAllScores().sortedByDescending { it.points }.take(20)
-            val top20ScoreDtos = top20Scores.map { score ->
-                val playerName = playerService.getPlayerNameById(score.playerId) ?: "Unknown player"
-                ScoreDto(score.id, playerName, score.points)
-            }
-            call.respond(top20ScoreDtos)
+            call.respond(scoreService.getAllScores().sortedByDescending { it.points }.take(20).map {
+                ScoreDto(it.id, playerService.getPlayerNameById(it.playerId) ?: "Unknown", it.points)
+            })
         }
 
         /*
@@ -86,18 +83,18 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
         'it.points' refers to points property of each individual Score in the list.
         'take(20)' takes the first 20 items from the list.
         'map { ScoreDto(it.id, it.playerId, it.points) }' transforms(/maps) each Score in the list into a ScoreDto.
-        'it.id' 'it.playerId' 'it.points' refer to id playerId & points properties of each Score.
+        'it.id' 'it.points' refer to id & points properties of each Score.
+        'playerService.getPlayerNameById(it.playerId) ?: "Unknown"' uses this method to get the name instead of the
+        playerId
         'call.respond' is called with the list of ScoreDtos as an argument.
             This function sends this list of ScoreDtos.
          */
-        post("/returningplayer/") {
+        post("/playerandscore/") {
             val (name, points) = call.receive<ScoreCreationWithNameDto>()
-            val playerId = playerService.getPlayerIdByName(name) ?: return@post call.respondText(
-                "Player not found",
-                status = HttpStatusCode.NotFound
-            )
+            val playerId = playerService.getPlayerIdByName(name) ?: playerService.createNewPlayerReturnId(name) ?: ""
             val created = scoreService.createNewScore(playerId, points)
-            call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
+            call.respond(status = HttpStatusCode.Created, message =
+            ScoreDto(created.id, created.playerId, created.points))
         }
         /*
         First val contains name and points received from the call
@@ -108,14 +105,5 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
         newplayer is basically the same, except the second variable creates a new player with the given name
         if it isn't already taken, and the id given  to the name is extracted and used for the score creation
          */
-        post("/newplayer/") {
-            val (name, points) = call.receive<ScoreCreationWithNameDto>()
-            val (id) = playerService.createNewPlayer(name) ?: return@post call.respondText(
-                "That name already exists.",
-                status = HttpStatusCode.NotFound
-            )
-            val created = scoreService.createNewScore(id, points)
-            call.respond(status = HttpStatusCode.Created, message = ScoreDto(created.id, created.playerId, created.points))
-        }
     }
 }

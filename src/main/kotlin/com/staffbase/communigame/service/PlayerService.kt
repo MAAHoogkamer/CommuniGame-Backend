@@ -9,4 +9,5 @@ interface PlayerService {
     fun removeById(id: String): Boolean
     fun getPlayerIdByName(name: String): String?
     fun getPlayerNameById(playerId: String): String?
+    fun createNewPlayerReturnId(name: String): String?
 }

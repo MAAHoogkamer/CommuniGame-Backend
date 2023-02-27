@@ -42,4 +42,14 @@ class InMemoryPlayerService : PlayerService {
     override fun getPlayerNameById(playerId: String): String? {
         return players.find { it.id == playerId }?.name
     }
+    override fun createNewPlayerReturnId(name: String): String? {
+        // not thread safe, ignore for now
+        if (players.any { it.name == name }) {
+            // If player with that name already exists:
+            return null
+        }
+        val player = Player((++indexCounter).toString(), name)
+        players.add(player)
+        return player.id
+    }
 }
