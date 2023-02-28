@@ -89,7 +89,7 @@ fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService)
         'call.respond' is called with the list of ScoreDtos as an argument.
             This function sends this list of ScoreDtos.
          */
-        post("/playerandscore/") {
+        post("/nameandscore/") {
             val (name, points) = call.receive<ScoreCreationWithNameDto>()
             val playerId = playerService.getPlayerIdByName(name) ?: playerService.createNewPlayerReturnId(name) ?: ""
             val created = scoreService.createNewScore(playerId, points)
