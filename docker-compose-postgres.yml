@@ -14,3 +14,5 @@ services:
     restart: always
     ports:
       - 8181:8080
+
+# start with docker-compose -f docker-compose-postgres.yml up
