@@ -82,6 +82,21 @@ kmongo is a Kotlin driver for MongoDB. It provides a type-safe API for interacti
 The driver uses coroutines to allow asynchronous interactions with the database. 
 With kmongo, you can perform CRUD (create, read, update, delete) operations on collections in a MongoDB database.
 <details>
+<summary>Sync, Async, Serialization</summary>
+Since using kmongo to interact with MongoDB, recommended using the coroutine-based API provided by kmongo 
+to query the database. Coroutine-based APIs allow to write asynchronous, 
+non-blocking code that can help the application be more responsive and efficient.
+
+Use coroutines to perform database operations without blocking the main thread. For example, 
+when you perform a long-running database operation, you can use a coroutine to keep the UI responsive while 
+the operation is running in the background. This can improve the overall performance of your application.
+
+Serialization is typically used to convert data between different formats or representations, 
+such as converting between JSON and a Kotlin data class. While it's possible to use serialization to query the database,
+it may not be the most efficient or flexible way to do so. The coroutine-based API provided by kmongo is 
+designed specifically for interacting with MongoDB and is likely to be more suitable for your needs.
+</details>
+<details>
 <summary>coroutines</summary>
 Coroutines are a powerful feature of Kotlin that enable asynchronous and non-blocking programming. 
 They allow you to write asynchronous code that looks like synchronous code, 
