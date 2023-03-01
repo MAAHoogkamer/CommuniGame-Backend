@@ -67,3 +67,19 @@ Start mongodb through terminal:<br>
 ```
 docker run -p 9292:27017 --name test-mongo -d mongo:latest
 ```
+Recommended: Use the following to use the standard 27017 port:
+```
+docker run --name test-mongo -d mongo:latest
+```
+Connect to the container: `docker exec -it test-mongo bash`<br>
+Launch the shell client: `mongosh`<br>
+Show databases: `show dbs`<br>
+Use/create db: `use {name}`<br>
+Create data in collection 'people': `db.people.save({ firstname: "Nic", lastname: "Raboy" })`<br> 
+
+
+API has DTO <-> DBO, mappen <br>
+MongoDB (any DB use with Database plugin)<br>
+Install MongoDB library to Kotlin (kmongo)<br>
+
+(Domainobjecten API = thema. businessobjecten) <br>

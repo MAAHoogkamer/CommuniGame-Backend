@@ -32,4 +32,6 @@ dependencies {
     // For using CORS:
     implementation("io.ktor:ktor-server-default-headers:$ktor_version")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
+    // For MongoDB library:
+    implementation("org.litote.kmongo:kmongo:4.8.0")
 }
