@@ -76,7 +76,30 @@ Launch the shell client: `mongosh`<br>
 Show databases: `show dbs`<br>
 Use/create db: `use {name}`<br>
 Create data in collection 'people': `db.people.save({ firstname: "Nic", lastname: "Raboy" })`<br> 
+<details>
+<summary>kmongo library</summary>
+kmongo is a Kotlin driver for MongoDB. It provides a type-safe API for interacting with MongoDB databases in Kotlin. 
+The driver uses coroutines to allow asynchronous interactions with the database. 
+With kmongo, you can perform CRUD (create, read, update, delete) operations on collections in a MongoDB database.
+<details>
+<summary>coroutines</summary>
+Coroutines are a powerful feature of Kotlin that enable asynchronous and non-blocking programming. 
+They allow you to write asynchronous code that looks like synchronous code, 
+making it easier to write, read, and maintain.
 
+In a nutshell, a coroutine is a lightweight thread that can be paused and resumed at any point, 
+allowing for concurrency without using multiple threads. Coroutines are cooperative, 
+meaning they must explicitly yield control to other coroutines, allowing them to run.
+
+With coroutines, you can write code that performs I/O operations, such as database queries or network requests, 
+without blocking the thread that is executing the code. 
+Instead, the coroutine is suspended until the I/O operation completes, and then resumed with the result.
+
+Kotlin's coroutine support is built on top of the standard Java Thread API and offers a simpler and more efficient
+way to write concurrent code. Coroutines provide a clean and expressive way to write asynchronous and non-blocking code, 
+making it easier to write scalable and performant applications.
+</details>
+</details>
 
 API has DTO <-> DBO, mappen <br>
 MongoDB (any DB use with Database plugin)<br>
