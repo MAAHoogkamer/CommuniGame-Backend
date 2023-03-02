@@ -6,9 +6,9 @@ import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.*
 import org.litote.kmongo.reactivestreams.KMongo
 
-class Database(collectionName: String) {
+open class Database(collectionName: String) {
     private val client = KMongo.createClient().coroutine // create a client connection
-    private val database = client.getDatabase("my_database") // get a reference to the database
+    val database = client.getDatabase("my_database") // get a reference to the database
     private val collection = when(collectionName) {
         "players" -> database.getCollection<Player>("players") // get a reference to the players collection
         "scores" -> database.getCollection<Score>("scores") // get a reference to the scores collection
