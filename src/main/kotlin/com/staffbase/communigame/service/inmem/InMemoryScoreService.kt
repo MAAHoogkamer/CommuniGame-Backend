@@ -8,9 +8,9 @@ class InMemoryScoreService : ScoreService {
 
     var indexCounter: Int = 0
 
-    override fun createNewScore(name: String, points: Int): Score {
+    override fun createNewScore(playerId: String, points: Int): Score {
         // not thread safe, ignore for now
-        val score = Score((++indexCounter).toString(), name)
+        val score = Score((++indexCounter).toString(), playerId, points)
         scores.add(score)
         return score
     }
@@ -25,5 +25,9 @@ class InMemoryScoreService : ScoreService {
 
     override fun removeById(id: String): Boolean {
         return scores.removeIf { it.id == id }
+    }
+
+    override fun getScoresByPlayerId(playerId: String): List<Score> {
+        return scores.filter { it.playerId == playerId }
     }
 }

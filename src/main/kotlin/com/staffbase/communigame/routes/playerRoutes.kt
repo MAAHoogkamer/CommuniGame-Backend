@@ -2,7 +2,9 @@ package com.staffbase.communigame.routes
 
 import com.staffbase.communigame.dto.PlayerCreationDto
 import com.staffbase.communigame.dto.PlayerDto
+import com.staffbase.communigame.dto.ScoreDto
 import com.staffbase.communigame.service.PlayerService
+import com.staffbase.communigame.service.ScoreService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
@@ -15,7 +17,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 
 // API
-fun Route.playerRouting(playerService: PlayerService) {
+fun Route.playerRouting(playerService: PlayerService, scoreService: ScoreService) {
     route("/players") {
         get {
             call.respond(playerService.getAllPlayers().map {
@@ -42,8 +44,14 @@ fun Route.playerRouting(playerService: PlayerService) {
         }
         post {
             val player = call.receive<PlayerCreationDto>()
+            // val player receives the Dto send by the post request
             val created = playerService.createNewPlayer(player.name)
-            call.respond(status = HttpStatusCode.Created, message = PlayerDto(created.id, created.name))
+            // uses createNewPlayer, and depending on if successful or name is already taken:
+            if (created != null) {
+                call.respond(status = HttpStatusCode.Created, message = PlayerDto(created.id, created.name))
+            } else {
+                call.respondText("That name already exists.", status = HttpStatusCode.Conflict)
+            }
         }
         delete("{id?}") {
             val id = call.parameters["id"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
@@ -51,6 +59,33 @@ fun Route.playerRouting(playerService: PlayerService) {
                 call.respondText("Player removed correctly", status = HttpStatusCode.Accepted)
             } else {
                 call.respondText("Not Found", status = HttpStatusCode.NotFound)
+            }
+        }
+        // players/allscoresof/{name}
+        // For getting all scores by player name
+        get("/allscoresof/{name}") {
+            val name = call.parameters["name"] ?: return@get call.respondText(
+                "Missing player name",
+                status = HttpStatusCode.BadRequest
+            )
+            val player = playerService.getPlayerIdByName(name) ?: return@get call.respondText(
+                "No player found with name $name",
+                status = HttpStatusCode.NotFound
+            )
+            call.respond(scoreService.getScoresByPlayerId(player).map {
+                ScoreDto(it.id, it.playerId, it.points)
+            })
+        }
+        //
+        post("/newplayer/") {
+            val player = call.receive<PlayerCreationDto>()
+            // val player receives the Dto send by the post request
+            val created = playerService.createNewPlayer(player.name)
+            // uses createNewPlayer, and depending on if successful or name is already taken:
+            if (created != null) {
+                call.respond(status = HttpStatusCode.Created, message = PlayerDto(created.id, created.name))
+            } else {
+                call.respondText("That name already exists.", status = HttpStatusCode.Conflict)
             }
         }
     }
