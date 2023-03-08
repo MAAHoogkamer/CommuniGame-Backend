@@ -6,7 +6,7 @@ import org.litote.kmongo.reactivestreams.KMongo
 
 class PlayerDatabase(dbName: String) {
     private val client = KMongo.createClient().coroutine // create a client connection
-    private val database = client.getDatabase(dbName) // get a reference to the database
+    private val database = client.getDatabase("communigame") // get a reference to the database
     private val collection = database.getCollection<Player>("players") // get a reference to the players collection
 
     suspend fun getAllPlayers(): List<Player> {

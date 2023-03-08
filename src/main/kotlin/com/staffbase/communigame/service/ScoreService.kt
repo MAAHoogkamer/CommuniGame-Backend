@@ -1,6 +1,7 @@
 package com.staffbase.communigame.service
 
 import com.staffbase.communigame.models.Score
+import com.staffbase.communigame.persistence.ScoreDatabase
 
 // Here be the database Interface functions
 interface ScoreService {
