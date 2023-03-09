@@ -8,29 +8,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 
 // Here be the Implementation Interface functions (using the database)
-class ScoreServiceImpl : ScoreService {
-
-    private var ScoreDb = ScoreDatabase();
-
-    private val scope = CoroutineScope(Dispatchers.Default)
+class ScoreServiceImpl(private val scoreDatabase: ScoreDatabase) : ScoreService {
 
     override suspend fun createNewScore(playerId: String, points: Int): Score {
-        return ScoreDb.createNewScore(playerId, points)
+        return scoreDatabase.createNewScore(playerId, points)
     }
 
     override suspend fun getAllScores(): List<Score> {
-        return ScoreDb.getAllScores()
+        return scoreDatabase.getAllScores()
     }
 
     override suspend fun getScoreById(id: String): Score? {
-        return ScoreDb.getScoreById(id)
+        return scoreDatabase.getScoreById(id)
     }
 
     override suspend fun removeById(id: String): Boolean {
-        return ScoreDb.removeById(id)
+        return scoreDatabase.removeById(id)
     }
 
     override suspend fun getScoresByPlayerId(playerId: String): List<Score> {
-        return ScoreDb.getScoresByPlayerId(playerId)
+        return scoreDatabase.getScoresByPlayerId(playerId)
     }
 }
