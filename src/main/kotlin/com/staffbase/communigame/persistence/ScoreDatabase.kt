@@ -4,9 +4,9 @@ import com.staffbase.communigame.models.Score
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
 
-class ScoreDatabase(dbName: String) {
+class ScoreDatabase() {
     private val client = KMongo.createClient().coroutine // create client connection
-    private val database = client.getDatabase(dbName) // reference to the database
+    private val database = client.getDatabase("communigame") // reference to the database
     private val collection = database.getCollection<Score>("scores") // reference to the scores collection
 
     suspend fun getAllScores(): List<Score> {

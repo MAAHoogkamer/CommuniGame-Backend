@@ -5,9 +5,9 @@ import com.staffbase.communigame.persistence.ScoreDatabase
 
 // Here be the database Interface functions
 interface ScoreService {
-    fun createNewScore(playerId: String, points: Int): Score
-    fun getAllScores(): List<Score>
-    fun getScoreById(id: String): Score?
-    fun removeById(id: String): Boolean
-    fun getScoresByPlayerId(playerId: String): List<Score>
+    suspend fun createNewScore(playerId: String, points: Int): Score
+    suspend fun getAllScores(): List<Score>
+    suspend fun getScoreById(id: String): Score?
+    suspend fun removeById(id: String): Boolean
+    suspend fun getScoresByPlayerId(playerId: String): List<Score>
 }
