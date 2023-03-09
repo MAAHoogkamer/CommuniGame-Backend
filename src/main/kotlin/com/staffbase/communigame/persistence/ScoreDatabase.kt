@@ -17,7 +17,7 @@ class ScoreDatabase() {
         return collection.findOneById(id)
     }
 
-    suspend fun addScore(score: Score) {
+    suspend fun createNewScore(score: Score) {
         collection.insertOne(score)
     }
 
@@ -25,7 +25,7 @@ class ScoreDatabase() {
         collection.replaceOneById(score.id, score)
     }
 
-    suspend fun deleteScoreById(id: String) {
+    suspend fun removeById(id: String) {
         collection.deleteOneById(id)
     }
 }
