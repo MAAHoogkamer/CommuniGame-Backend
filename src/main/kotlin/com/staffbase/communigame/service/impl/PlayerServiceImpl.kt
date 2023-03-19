@@ -1,14 +1,8 @@
 package com.staffbase.communigame.service.impl
 
 import com.staffbase.communigame.models.Player
-import com.staffbase.communigame.models.Score
 import com.staffbase.communigame.persistence.PlayerDatabase
-import com.staffbase.communigame.persistence.ScoreDatabase
 import com.staffbase.communigame.service.PlayerService
-import com.staffbase.communigame.service.ScoreService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 
 // Here be the Implementation Interface functions (using the database)
 class PlayerServiceImpl(private val playerDatabase: PlayerDatabase) : PlayerService {
