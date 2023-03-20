@@ -3,6 +3,7 @@ package com.staffbase.communigame.routes
 import com.staffbase.communigame.dto.ScoreCreationDto
 import com.staffbase.communigame.dto.ScoreCreationWithNameDto
 import com.staffbase.communigame.dto.ScoreDto
+import com.staffbase.communigame.service.DataMapper
 import com.staffbase.communigame.service.PlayerService
 import com.staffbase.communigame.service.ScoreService
 import io.ktor.http.*
@@ -10,6 +11,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.litote.kmongo.MongoOperator
 
 fun Route.scoreRouting(scoreService: ScoreService, playerService: PlayerService) {
     route("/scores") {

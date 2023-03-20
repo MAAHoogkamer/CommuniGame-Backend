@@ -8,6 +8,9 @@ interface PlayerService {
     suspend fun getPlayerById(id: String): Player?
     suspend fun removeById(id: String): Boolean
     suspend fun getPlayerIdByName(name: String): String?
+    // Get single name using an id
     suspend fun getPlayerNameById(playerId: String): String?
+    // Get a list of names using ids
+    suspend fun getPlayerNamesListById(playerId: List<String>): String?
     suspend fun createNewPlayerReturnId(name: String): String?
 }
