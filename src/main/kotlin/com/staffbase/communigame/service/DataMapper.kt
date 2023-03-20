@@ -15,24 +15,25 @@ class DataMapper {
 */
 
 class DataMapper {
+    private val currentTime = Instant.now().toString() // get current time as a string
+    private val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     fun scoreDboToDto(dbo: Score, playerName: String): ScoreDto {
-        return ScoreDto(/*dbo.id,*/ playerName, dbo.playerId, dbo.points)
+        return ScoreDto(playerName, dbo.playerId, dbo.points)
     }
 
     fun scoreDtoToDbo(dto: ScoreDto): Score {
-        val currentTime = Instant.now().toString() // get current time as a string
-        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        val id = List(15) { charPool.random() }.joinToString("")
+        val id = "sc" + List(15) { charPool.random() }.joinToString("")
         return Score(id, dto.playerId, dto.points, currentTime)
     }
 
     fun playerDboToDto(dbo: Player): PlayerDto {
-        return PlayerDto(dbo.id, dbo.name, dbo.topScore)
+        return PlayerDto(dbo.name, dbo.topScore)
     }
 
-    fun playerDtoToDbo(dto: ScoreDto): Score {
-        val currentTime = Instant.now().toString() // get current time as a string
-        return Score(dto.id, dto.playerId, dto.points, currentTime)
+    fun playerDtoToDbo(dto: PlayerDto): Player {
+        val id = "pl" + List(15) { charPool.random() }.joinToString("")
+        val topScore = 666; // TODO Call and get top score
+        return Player(id, dto.name, currentTime, topScore)
     }
 
 }
