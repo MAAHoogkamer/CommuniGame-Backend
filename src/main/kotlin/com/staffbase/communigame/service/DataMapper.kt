@@ -32,4 +32,5 @@ class DataMapper {
         val currentTime = Instant.now().toString() // get current time as a string
         return Score(dto.id, dto.playerId, dto.points, currentTime)
     }
+
 }
