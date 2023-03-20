@@ -16,12 +16,14 @@ class DataMapper {
 
 class DataMapper {
     fun scoreDboToDto(dbo: Score, playerName: String): ScoreDto {
-        return ScoreDto(dbo.id, playerName, dbo.playerId, dbo.points)
+        return ScoreDto(/*dbo.id,*/ playerName, dbo.playerId, dbo.points)
     }
 
     fun scoreDtoToDbo(dto: ScoreDto): Score {
         val currentTime = Instant.now().toString() // get current time as a string
-        return Score(dto.id, dto.playerId, dto.points, currentTime)
+        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        val id = List(15) { charPool.random() }.joinToString("")
+        return Score(id, dto.playerId, dto.points, currentTime)
     }
 
     fun playerDboToDto(dbo: Player): PlayerDto {
